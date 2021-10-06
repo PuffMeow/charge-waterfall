@@ -15,6 +15,7 @@ export interface TOptions {
   gapY?: number
   /** 是否响应式改变布局宽度 */
   resizable?: boolean
+  onClick?: (index: number, src: string, event: Event) => void
 }
 
 export interface TImageList {

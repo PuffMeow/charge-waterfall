@@ -1,4 +1,4 @@
-import { throttle } from "../utils/index";
+import { debounce, throttle } from "../utils/index";
 import type { TOptions } from "./types";
 
 export default class Waterfall {
@@ -30,20 +30,23 @@ export default class Waterfall {
     resizable && this.resize()
 
     window.onload = () => {
-      this.computedPosition()
+      this.computePosition()
     }
   }
 
   private createImg = () => {
-    const { dataSource, imgContainerClass = 'waterfall-img-container', imgClass = 'waterfall-img' } = this.options
+    const { dataSource, onClick, imgContainerClass = 'waterfall-img-container', imgClass = 'waterfall-img' } = this.options
     const fragment = document.createDocumentFragment()
-    dataSource.forEach(item => {
+    dataSource.forEach((item, index) => {
       const div = document.createElement('div')
       div.className = imgContainerClass
       const img = document.createElement('img')
       img.src = item.src
       img.alt = item?.alt || 'image'
       img.className = imgClass
+      div.onclick = (e) => {
+        onClick?.(index, item.src, e)
+      }
       div.appendChild(img)
       fragment.appendChild(div)
     });
@@ -53,12 +56,7 @@ export default class Waterfall {
     (this.options.container as HTMLElement).append(fragment)
   }
 
-
-  update = () => {
-    this.computedPosition()
-  }
-
-  private computedPosition = () => {
+  private computePosition = () => {
     let { items, options: { gapX = 0, gapY = 0, count = 2, width } } = this
     width = width || (this.options.container as HTMLElement).clientWidth / count || document.body.clientWidth || document.documentElement.clientWidth
     this.itemHeight = new Array(count).fill(0)
@@ -80,12 +78,32 @@ export default class Waterfall {
       item.style.opacity = '1'
     });
 
+    this.refreshContainerHeight()
+  }
+
+  private refreshContainerHeight = () => {
     (this.options.container as HTMLElement).style.height = Math.max(...this.itemHeight) + 'px'
   }
 
+  private throttleResize = throttle(() => {
+    this.computePosition()
+  }, 100)
+
   private resize = () => {
-    window.addEventListener('resize', throttle(() => {
-      this.computedPosition()
-    }))
+    window.addEventListener('resize', this.throttleResize)
+  }
+
+  onReachBottom = (reachBottomCallback: () => void) => {
+    window.addEventListener('scroll', debounce(() => {
+      const { clientHeight, scrollTop, scrollHeight } = document.documentElement
+
+      if ((clientHeight + scrollTop + 100 >= scrollHeight)) {
+        reachBottomCallback()
+      }
+    }, 150))
+  }
+
+  destroy = () => {
+    window.removeEventListener('resize', this.throttleResize)
   }
 }
