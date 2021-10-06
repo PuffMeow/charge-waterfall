@@ -3,8 +3,6 @@ import type { TOptions } from "./types";
 
 export default class Waterfall {
   private options
-  private width = 0 //每一列的宽度
-  private flag: DocumentFragment | null = null  //虚拟节点集合
   private items: HTMLElement[] = []  //存储子元素
   private itemHeight: number[] = []  //每列的宽度
 
@@ -14,6 +12,7 @@ export default class Waterfall {
   }
 
   private init = () => {
+    let { resizable = false } = this.options
     if (typeof this.options.container === 'string') {
       if (!this.options.container.startsWith('.') && !this.options.container.startsWith('#')) {
         throw Error(`请按照标准的dom查询条件传入，如'.container'或'#container'`)
@@ -21,64 +20,72 @@ export default class Waterfall {
 
       this.options.container = document.querySelector<HTMLElement>(this.options.container)
     }
+
     if (!this.options.container) {
       throw Error('container实例不存在，请检查')
     }
 
-    this.items = Array.from(this.options.container.children) as HTMLElement[]
-    console.log(this.items)
-    this.reset()
-    this.render()
+    this.createImg()
+    this.items = Array.from((this.options.container as HTMLElement).children) as HTMLElement[]
+    resizable && this.resize()
+
+    window.onload = () => {
+      this.computedPosition()
+    }
+  }
+
+  private createImg = () => {
+    const { dataSource, imgContainerClass = 'waterfall-img-container', imgClass = 'waterfall-img' } = this.options
+    const fragment = document.createDocumentFragment()
+    dataSource.forEach(item => {
+      const div = document.createElement('div')
+      div.className = imgContainerClass
+      const img = document.createElement('img')
+      img.src = item.src
+      img.alt = item?.alt || 'image'
+      img.className = imgClass
+      div.appendChild(img)
+      fragment.appendChild(div)
+    });
+    (Array.from(fragment.children) as HTMLElement[]).forEach(child => {
+      child.style.opacity = '0'
+    });
+    (this.options.container as HTMLElement).append(fragment)
   }
 
 
-  private reset = () => {
-    const { count = 2 } = this.options
-    this.flag = document.createDocumentFragment()
-    this.width = (this.options.container as HTMLElement).clientWidth / count;
-    console.log('width', this.width)
-    this.itemHeight = new Array(count).fill(0);
-    (this.options.container as HTMLElement).innerHTML = ''
+  update = () => {
+    this.computedPosition()
   }
 
-  private render = () => {
-    const { width, items, itemHeight, flag, options: { gap = 0 } } = this
-    requestAnimationFrame(() => {
-      items.forEach(item => {
-        item.style.width = width + 'px'
-        item.style.position = 'absolute'
+  private computedPosition = () => {
+    let { items, options: { gapX = 0, gapY = 0, count = 2, width } } = this
+    width = width || (this.options.container as HTMLElement).clientWidth / count || document.body.clientWidth || document.documentElement.clientWidth
+    this.itemHeight = new Array(count).fill(0)
 
-        const img = (item.querySelector('img') || item) as HTMLImageElement
-        if (!img) {
-          throw Error('container容器中不存在img元素')
-        }
-        if (img?.complete) {
-          const idx = itemHeight.indexOf(Math.min(...itemHeight))  //找到高度最小的元素的下标
-          item.style.left = idx * (width + gap) + 'px'
-          item.style.top = itemHeight[idx] + 'px'
+    items.forEach(item => {
+      const img = item.querySelector('img') as HTMLImageElement
+      item.style.width = width + 'px'
+      item.style.position = 'absolute'
+      img.style.width = width + 'px'
+      if (!img) {
+        throw Error('container容器中不存在img元素')
+      }
+      let idx = this.itemHeight.indexOf(Math.min(...this.itemHeight))  //找到高度最小的元素的下标
+      item.style.left = idx * (width! + gapX) + 'px'
+      item.style.top = this.itemHeight[idx] + 'px'
+      this.itemHeight[idx] += (img.height * width! / img.width) + gapY
 
-          itemHeight[idx] += img.height * width / img.width + gap
-          flag?.appendChild(item)
-        } else {
-          img.addEventListener('load', () => {
-            console.log(item.clientHeight)
-            const idx = itemHeight.indexOf(Math.min(...itemHeight))  //找到高度最小的元素的下标
-            item.style.left = idx * (width + gap) + 'px'
-            item.style.top = itemHeight[idx] + 'px'
-            itemHeight[idx] += img.height * width / img.width + gap
-            flag?.appendChild(item);
-            (this.options.container as HTMLElement).append(flag as DocumentFragment)
-          })
-        }
-      });
-      (this.options.container as HTMLElement).append(flag as DocumentFragment)
-    })
+      item.style.transition = 'opacity 0.3s'
+      item.style.opacity = '1'
+    });
+
+    (this.options.container as HTMLElement).style.height = Math.max(...this.itemHeight) + 'px'
   }
 
-  resize = () => {
+  private resize = () => {
     window.addEventListener('resize', throttle(() => {
-      this.reset()
-      this.render()
+      this.computedPosition()
     }))
   }
 }
