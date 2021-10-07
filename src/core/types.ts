@@ -2,7 +2,7 @@ export interface TOptions {
   /** 装载图片的父容器 */
   container: string | Element | null
   /** 图片数据源 [{src: "xxx"}] */
-  dataSource: TImageList[]
+  dataSource: TDataSource[]
   /** 装载img标签的外层盒子class属性，默认 waterfall-img-container */
   imgContainerClass?: string
   /** img标签的class属性，默认 waterfall-img */
@@ -19,13 +19,14 @@ export interface TOptions {
   gapY?: number
   /** 是否响应式改变布局宽度 */
   resizable?: boolean
-  onClick?: (index: number, src: string, event: Event) => void
+  onClick?: (index: number, dataSource: TDataSource, event: Event) => void
   /** 传入要渲染的元素模板字符串，例如 `<div>Title</div>` */
-  render?: string
+  render?: (dataSource: TDataSource) => string
 }
 
-export interface TImageList {
+export interface TDataSource<T = any> {
   /** 图片url地址 */
   src: string
+  data: T
   alt?: string
 }

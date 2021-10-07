@@ -65,7 +65,7 @@ export default class Waterfall {
       img.alt = item?.alt || 'image'
       img.className = imgClass!
       div.onclick = (e) => {
-        onClick?.(index, item.src, e)
+        onClick?.(index, item, e)
       }
       div.appendChild(img)
 
@@ -73,7 +73,7 @@ export default class Waterfall {
         const bottomBox = document.createElement('div')
         bottomBox.className = bottomContainerClass!
         bottomBox.style.marginTop = '-4px'
-        bottomBox.innerHTML = render
+        bottomBox.innerHTML = render(item)
         div.appendChild(bottomBox)
       }
 
