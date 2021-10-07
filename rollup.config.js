@@ -17,7 +17,7 @@ export default {
     nodeResolve(),
     commonjs(),
     typescript(),
-    // terser(),
+    terser(),
     babel({
       babelHelpers: 'runtime',
       extensions: ['.js', '.ts', '.tsx'],

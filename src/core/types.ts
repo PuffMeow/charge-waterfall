@@ -3,8 +3,12 @@ export interface TOptions {
   container: string | Element | null
   /** 图片数据源 [{src: "xxx"}] */
   dataSource: TImageList[]
+  /** 装载img标签的外层盒子class属性，默认 waterfall-img-container */
   imgContainerClass?: string
+  /** img标签的class属性，默认 waterfall-img */
   imgClass?: string
+  /** 装载img标签图片底部内容盒子的class属性，默认 waterfall-bottom-container*/
+  bottomContainerClass?: string
   /**每一列的宽度 */
   width?: number
   /** 水平方向展示的列数 */
@@ -16,6 +20,8 @@ export interface TOptions {
   /** 是否响应式改变布局宽度 */
   resizable?: boolean
   onClick?: (index: number, src: string, event: Event) => void
+  /** 传入要渲染的元素模板字符串，例如 `<div>Title</div>` */
+  render?: string
 }
 
 export interface TImageList {
