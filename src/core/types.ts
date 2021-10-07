@@ -12,21 +12,21 @@ export interface TOptions {
   /**每一列的宽度 */
   width?: number
   /** 水平方向展示的列数 */
-  count?: number
-  /** 水平间距 */
+  column?: number
+  /** 元素水平间距 */
   gapX?: number
-  /** 垂直间距 */
+  /** 元素垂直间距 */
   gapY?: number
   /** 是否响应式改变布局宽度 */
   resizable?: boolean
-  onClick?: (index: number, dataSource: TDataSource, event: Event) => void
+  onClick?: (dataSource: TDataSource, index: number, event: Event) => void
   /** 传入要渲染的元素模板字符串，例如 `<div>Title</div>` */
-  render?: (dataSource: TDataSource) => string
+  render?: (dataSource: TDataSource, index: number) => string
 }
 
 export interface TDataSource<T = any> {
   /** 图片url地址 */
-  src: string
+  src?: string
   data: T
   alt?: string
 }

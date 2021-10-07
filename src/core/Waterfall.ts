@@ -47,34 +47,37 @@ export default class Waterfall {
   }
 
   private createContent = async () => {
-    const { dataSource,
+    const {
+      dataSource,
       onClick,
       imgClass,
       imgContainerClass,
       bottomContainerClass,
       render
     } = this.options
-    await Promise.allSettled(this.options.dataSource.map(item => loadAsyncImage(item.src)))
+    await Promise.allSettled(this.options.dataSource.map(item => item.src && loadAsyncImage(item.src)))
 
     const fragment = document.createDocumentFragment();
     dataSource.forEach((item, index) => {
       const div = document.createElement('div')
       div.className = imgContainerClass!
-      const img = document.createElement('img')
-      img.src = item.src
-      img.alt = item?.alt || 'image'
-      img.className = imgClass!
-      div.onclick = (e) => {
-        onClick?.(index, item, e)
+      if (item.src) {
+        const img = document.createElement('img')
+        img.src = item.src
+        img.alt = item?.alt || 'image'
+        img.className = imgClass!
+        div.appendChild(img)
       }
-      div.appendChild(img)
-
       if (render) {
         const bottomBox = document.createElement('div')
         bottomBox.className = bottomContainerClass!
-        bottomBox.style.marginTop = '-4px'
-        bottomBox.innerHTML = render(item)
+        if (item.src) bottomBox.style.marginTop = '-4px'
+        bottomBox.innerHTML = render(item, index)
         div.appendChild(bottomBox)
+      }
+
+      div.onclick = (e) => {
+        onClick?.(item, index, e)
       }
 
       fragment.appendChild(div)
@@ -85,29 +88,30 @@ export default class Waterfall {
 
   private computePosition = () => {
     requestAnimationFrame(() => {
-      let { items, options: { gapX = 0, gapY = 0, count = 2, width, bottomContainerClass, render } } = this
-      width = width || (this.options.container as HTMLElement).clientWidth / count || document.body.clientWidth || document.documentElement.clientWidth
-      this.itemHeight = new Array(count).fill(0)
+      let { items, options: { gapX = 0, gapY = 0, column = 2, width, bottomContainerClass, render } } = this
+      width = width || (this.options.container as HTMLElement).clientWidth / column
+      this.itemHeight = new Array(column).fill(0)
 
       items.forEach(item => {
         item.style.opacity = '0'
         const img = item.querySelector('img') as HTMLImageElement
+        if (img) img.style.width = width + 'px'
         let imgContainerHeight
         item.style.width = width + 'px'
         item.style.position = 'absolute'
-        img.style.width = width + 'px'
-
+        // 兼容没有传入图片src的模式
         if (render) {
           const bottomContainer = item.querySelector(`.${bottomContainerClass}`) as HTMLElement
-          imgContainerHeight = img.height + (bottomContainer?.clientHeight || 0)
+          bottomContainer.style.width = width + 'px'
+          imgContainerHeight = (img?.height || 0) + (bottomContainer?.clientHeight || 0)
         } else {
-          imgContainerHeight = img.height
+          imgContainerHeight = img?.height || 0
         }
 
         let idx = this.itemHeight.indexOf(Math.min(...this.itemHeight))  //找到高度最小的元素的下标
         item.style.left = idx * (width! + gapX) + 'px'
         item.style.top = this.itemHeight[idx] + 'px'
-        this.itemHeight[idx] += (imgContainerHeight * width! / width!) + gapY
+        this.itemHeight[idx] += Math.round((imgContainerHeight * width! / width!) + gapY)
         item.style.transition = 'opacity 0.3s'
         item.style.opacity = '1'
       });
@@ -120,12 +124,10 @@ export default class Waterfall {
     (this.options.container as HTMLElement).style.height = Math.max(...this.itemHeight) + 'px'
   }
 
-  private throttleResize = throttle(() => {
-    this.computePosition()
-  }, 100)
-
   private resize = () => {
-    window.addEventListener('resize', this.throttleResize)
+    window.addEventListener('resize', this.store.throttleResize = throttle(() => {
+      this.computePosition()
+    }, 50))
   }
 
   onReachBottom = (reachBottomCallback: () => void) => {
@@ -135,11 +137,11 @@ export default class Waterfall {
       if ((clientHeight + scrollTop + 100 >= scrollHeight)) {
         reachBottomCallback()
       }
-    }, 150))
+    }, 100))
   }
 
   destroy = () => {
-    window.removeEventListener('resize', this.throttleResize)
+    window.removeEventListener('resize', this.store.throttleResize)
     window.removeEventListener('scroll', this.store.debounceScroll)
   }
 }

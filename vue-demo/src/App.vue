@@ -1,7 +1,7 @@
 <template>
   <div id="app">
+    <button @click="setIsOpen()">show-button</button>
     <HelloWorld v-if="isOpen" />
-    <button @click="setIsOpen()">test</button>
   </div>
 </template>
 
