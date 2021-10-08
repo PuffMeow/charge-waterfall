@@ -92,10 +92,13 @@ export default class Waterfall {
     return containerChildrens
   }
 
-  private computePosition = (containerChildrens: HTMLElement[]) => {
+  private computePosition = (containerChildrens: HTMLElement[], isResize: boolean = false) => {
     requestAnimationFrame(() => {
-      let { items, options: { gapX = 0, gapY = 0, column, width, bottomContainerClass, render } } = this
+      let { options: { gapX = 0, gapY = 0, column, width, bottomContainerClass, render } } = this
       width = width || (this.options.container as HTMLElement).clientWidth / column!
+
+      isResize && (this.itemHeight = new Array(column).fill(0))
+
       containerChildrens.forEach(item => {
         item.style.opacity = '0'
         const img = item.querySelector('img') as HTMLImageElement
@@ -130,7 +133,7 @@ export default class Waterfall {
 
   private resize = () => {
     window.addEventListener('resize', this.store.throttleResize = throttle(() => {
-      this.computePosition(this.items)
+      this.computePosition(this.items, true)
     }, 50))
   }
 
@@ -148,8 +151,6 @@ export default class Waterfall {
   loadMore = (dataSource: TDataSource[]) => {
     this.initImage(dataSource)
   }
-
-
 
   destroy = () => {
     window.removeEventListener('resize', this.store.throttleResize)

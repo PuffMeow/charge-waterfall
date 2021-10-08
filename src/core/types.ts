@@ -7,7 +7,7 @@ export interface TOptions {
   imgContainerClass?: string
   /** img标签的class属性，默认 waterfall-img */
   imgClass?: string
-  /** 装载img标签图片底部内容盒子的class属性，默认 waterfall-bottom-container*/
+  /** 装载img标签图片底部内容盒子的class属性，默认 waterfall-bottom-container */
   bottomContainerClass?: string
   /**每一列的宽度 */
   width?: number

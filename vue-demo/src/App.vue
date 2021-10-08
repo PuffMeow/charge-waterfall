@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <button @click="setIsOpen()">show-button</button>
+    <button @click="setIsOpen()">测试销毁destroy事件</button>
     <HelloWorld v-if="isOpen" />
   </div>
 </template>
