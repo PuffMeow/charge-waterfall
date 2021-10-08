@@ -1,3 +1,4 @@
+import { TDataSource } from "../../dist/index";
 import { debounce, loadAsyncImage, throttle } from "../utils/index";
 import type { TOptions } from "./types";
 
@@ -14,14 +15,15 @@ export default class Waterfall {
   }
 
   private initDefaultValue = () => {
-    const { imgContainerClass, imgClass, bottomContainerClass } = this.options
+    const { imgContainerClass, imgClass, bottomContainerClass, column } = this.options
+    if (!column) this.options.column = 2
     if (!imgContainerClass) this.options.imgContainerClass = 'waterfall-img-container'
     if (!imgClass) this.options.imgClass = 'waterfall-img'
     if (!bottomContainerClass) this.options.bottomContainerClass = 'waterfall-bottom-container'
   }
 
   private init = async () => {
-    let { resizable = false } = this.options
+    let { resizable = false, dataSource, column } = this.options
     if (typeof this.options.container === 'string') {
       if (!this.options.container.startsWith('.') && !this.options.container.startsWith('#')) {
         throw Error(`请按照标准的dom查询条件传入，如'.container'或'#container'`)
@@ -38,25 +40,28 @@ export default class Waterfall {
     if (items.length) {
       throw Error('container中存在其它元素，请确保container容器中没有其它子元素')
     }
-
-    await this.createContent()
-    this.items = Array.from((this.options.container as HTMLElement).children) as HTMLElement[];
+    this.itemHeight = new Array(column).fill(0);
     (this.options.container as HTMLElement).style.position = 'relative'
     resizable && this.resize()
-    this.computePosition()
+    this.initImage(dataSource)
   }
 
-  private createContent = async () => {
+  private initImage = async (dataSource: TDataSource[]) => {
+    const containerChildrens = await this.createContent(dataSource);
+    this.items = this.items.concat(containerChildrens)
+    this.computePosition(containerChildrens)
+  }
+
+  private createContent = async (dataSource: TDataSource[]) => {
     const {
-      dataSource,
       onClick,
       imgClass,
       imgContainerClass,
       bottomContainerClass,
       render
     } = this.options
-    await Promise.allSettled(this.options.dataSource.map(item => item.src && loadAsyncImage(item.src)))
-
+    await Promise.allSettled(dataSource.map(item => item.src && loadAsyncImage(item.src)))
+    const containerChildrens: HTMLElement[] = []
     const fragment = document.createDocumentFragment();
     dataSource.forEach((item, index) => {
       const div = document.createElement('div')
@@ -79,20 +84,19 @@ export default class Waterfall {
       div.onclick = (e) => {
         onClick?.(item, index, e)
       }
-
+      containerChildrens.push(div)
       fragment.appendChild(div)
     });
     (this.options.container as HTMLElement).append(fragment)
 
+    return containerChildrens
   }
 
-  private computePosition = () => {
+  private computePosition = (containerChildrens: HTMLElement[]) => {
     requestAnimationFrame(() => {
-      let { items, options: { gapX = 0, gapY = 0, column = 2, width, bottomContainerClass, render } } = this
-      width = width || (this.options.container as HTMLElement).clientWidth / column
-      this.itemHeight = new Array(column).fill(0)
-
-      items.forEach(item => {
+      let { items, options: { gapX = 0, gapY = 0, column, width, bottomContainerClass, render } } = this
+      width = width || (this.options.container as HTMLElement).clientWidth / column!
+      containerChildrens.forEach(item => {
         item.style.opacity = '0'
         const img = item.querySelector('img') as HTMLImageElement
         if (img) img.style.width = width + 'px'
@@ -112,7 +116,7 @@ export default class Waterfall {
         item.style.left = idx * (width! + gapX) + 'px'
         item.style.top = this.itemHeight[idx] + 'px'
         this.itemHeight[idx] += Math.round((imgContainerHeight * width! / width!) + gapY)
-        item.style.transition = 'opacity 0.3s'
+        item.style.transition = 'opacity 0.2s'
         item.style.opacity = '1'
       });
 
@@ -126,7 +130,7 @@ export default class Waterfall {
 
   private resize = () => {
     window.addEventListener('resize', this.store.throttleResize = throttle(() => {
-      this.computePosition()
+      this.computePosition(this.items)
     }, 50))
   }
 
@@ -139,6 +143,13 @@ export default class Waterfall {
       }
     }, 100))
   }
+
+  // TODO: 加载更多数据，现在存在问题，加载了新的数据之后滚动条会滚回顶部
+  loadMore = (dataSource: TDataSource[]) => {
+    this.initImage(dataSource)
+  }
+
+
 
   destroy = () => {
     window.removeEventListener('resize', this.store.throttleResize)

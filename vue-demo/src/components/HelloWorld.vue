@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import Waterfall, { TDataSource } from '../../../dist/index'
+import Waterfall from '../../../dist/index'
 export default {
   name: 'HelloWorld',
   data() {
@@ -72,6 +72,18 @@ export default {
       render: (dataSource, index) =>
         `<div>这是${dataSource.data?.name}</div>
         <div>哈哈哈哈哈</div>`,
+    })
+
+    this.waterfall.onReachBottom(() => {
+      console.log('触底')
+      this.waterfall.loadMore([
+        {
+          src: 'https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fpic.jj20.com%2Fup%2Fallimg%2Fmn02%2F123120192I5%2F201231192I5-0.jpg&refer=http%3A%2F%2Fpic.jj20.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1636102674&t=d4343c530fd669f622d259984974a365',
+          data: {
+            name: `第${Math.floor(Math.random() * 100).toFixed(1)}张图`,
+          },
+        },
+      ])
     })
   },
 
