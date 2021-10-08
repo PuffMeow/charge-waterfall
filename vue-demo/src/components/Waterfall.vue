@@ -1,17 +1,97 @@
 <template>
   <div class="hello">
     <div class="container"></div>
+    <div
+      v-if="isLoading"
+      style="display: flex; justify-content: center; align-items: center"
+    >
+      <svg
+        width="50"
+        height="20"
+        viewBox="0 0 120 30"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="#000"
+      >
+        <circle cx="15" cy="15" r="15">
+          <animate
+            attributeName="r"
+            from="15"
+            to="15"
+            begin="0s"
+            dur="0.8s"
+            values="15;9;15"
+            calcMode="linear"
+            repeatCount="indefinite"
+          />
+          <animate
+            attributeName="fill-opacity"
+            from="1"
+            to="1"
+            begin="0s"
+            dur="0.8s"
+            values="1;.5;1"
+            calcMode="linear"
+            repeatCount="indefinite"
+          />
+        </circle>
+        <circle cx="60" cy="15" r="9" fill-opacity="0.3">
+          <animate
+            attributeName="r"
+            from="9"
+            to="9"
+            begin="0s"
+            dur="0.8s"
+            values="9;15;9"
+            calcMode="linear"
+            repeatCount="indefinite"
+          />
+          <animate
+            attributeName="fill-opacity"
+            from="0.5"
+            to="0.5"
+            begin="0s"
+            dur="0.8s"
+            values=".5;1;.5"
+            calcMode="linear"
+            repeatCount="indefinite"
+          />
+        </circle>
+        <circle cx="105" cy="15" r="15">
+          <animate
+            attributeName="r"
+            from="15"
+            to="15"
+            begin="0s"
+            dur="0.8s"
+            values="15;9;15"
+            calcMode="linear"
+            repeatCount="indefinite"
+          />
+          <animate
+            attributeName="fill-opacity"
+            from="1"
+            to="1"
+            begin="0s"
+            dur="0.8s"
+            values="1;.5;1"
+            calcMode="linear"
+            repeatCount="indefinite"
+          />
+        </circle>
+      </svg>
+    </div>
   </div>
 </template>
 
 <script>
-import Waterfall from '../../../dist/index'
+import Waterfall from 'charge-waterfall'
 export default {
-  name: 'HelloWorld',
+  name: 'Waterfall',
   data() {
     return {
+      isLoading: false,
       waterfall: null,
-      dataSource: [
+      initialData: [
         {
           src: 'https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fnimg.ws.126.net%2F%3Furl%3Dhttp%253A%252F%252Fdingyue.ws.126.net%252F2021%252F0606%252F04a3d0f7j00qu8tsb001hc000hs00qoc.jpg%26thumbnail%3D650x2147483647%26quality%3D80%26type%3Djpg&refer=http%3A%2F%2Fnimg.ws.126.net&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1636017833&t=9859b8d0ec4fe8a8cf1c44583f324c88',
           data: {
@@ -66,24 +146,39 @@ export default {
   mounted() {
     this.waterfall = new Waterfall({
       container: '.container',
-      dataSource: this.dataSource,
+      initialData: this.initialData,
       column: 2,
       resizable: true,
+      bottomDistance: 200,
       render: (dataSource) =>
-        `<div>这是${dataSource.data?.name}}</div>
+        `<div>这是${dataSource.data?.name}</div>
         <div>哈哈哈哈哈</div>`,
+      onClick: (data, event) => {
+        console.log(data, event)
+      },
     })
 
     this.waterfall.onReachBottom(() => {
       console.log('触底')
-      this.waterfall.loadMore([
-        {
-          src: 'https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fpic.jj20.com%2Fup%2Fallimg%2Fmn02%2F123120192I5%2F201231192I5-0.jpg&refer=http%3A%2F%2Fpic.jj20.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1636102674&t=d4343c530fd669f622d259984974a365',
-          data: {
-            name: `第${Math.floor(Math.random() * 100).toFixed(1)}张图`,
+      if (this.isLoading) return
+      this.isLoading = true
+      setTimeout(() => {
+        this.waterfall.loadMore([
+          {
+            src: 'https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fpic.jj20.com%2Fup%2Fallimg%2Fmn02%2F123120192I5%2F201231192I5-0.jpg&refer=http%3A%2F%2Fpic.jj20.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1636102674&t=d4343c530fd669f622d259984974a365',
+            data: {
+              name: `${Math.floor(Math.random() * 100)}`,
+            },
           },
-        },
-      ])
+          {
+            src: 'https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fpic.jj20.com%2Fup%2Fallimg%2Fmn02%2F062919233114%2F1Z629233114-5.jpg&refer=http%3A%2F%2Fpic.jj20.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1636017833&t=4ddaf1b496ec72d9a24a0d21f9019733',
+            data: {
+              name: `${Math.floor(Math.random() * 100)}`,
+            },
+          },
+        ])
+        this.isLoading = false
+      }, 2000)
     })
   },
 
@@ -93,6 +188,5 @@ export default {
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 </style>

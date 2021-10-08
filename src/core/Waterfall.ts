@@ -23,7 +23,7 @@ export default class Waterfall {
   }
 
   private init = async () => {
-    let { resizable = false, dataSource, column } = this.options
+    let { resizable = false, initialData, column } = this.options
     if (typeof this.options.container === 'string') {
       if (!this.options.container.startsWith('.') && !this.options.container.startsWith('#')) {
         throw Error(`请按照标准的dom查询条件传入，如'.container'或'#container'`)
@@ -43,7 +43,7 @@ export default class Waterfall {
     this.itemHeight = new Array(column).fill(0);
     (this.options.container as HTMLElement).style.position = 'relative'
     resizable && this.resize()
-    this.initImage(dataSource)
+    this.initImage(initialData)
   }
 
   private initImage = async (dataSource: TDataSource[]) => {
@@ -52,7 +52,7 @@ export default class Waterfall {
     this.computePosition(containerChildrens)
   }
 
-  private createContent = async (dataSource: TDataSource[]) => {
+  private createContent = async (dataSource: TDataSource[] = []) => {
     const {
       onClick,
       imgClass,
@@ -138,18 +138,22 @@ export default class Waterfall {
   }
 
   onReachBottom = (reachBottomCallback: () => void) => {
+    const { bottomDistance = 100 } = this.options
+    if (bottomDistance < 100) {
+      throw Error('bottomDistance，触底事件离底部触发的距离不能小于100')
+    }
     window.addEventListener('scroll', this.store.debounceScroll = debounce(() => {
       const { clientHeight, scrollTop, scrollHeight } = document.documentElement
 
-      if ((clientHeight + scrollTop + 100 >= scrollHeight)) {
+      if ((clientHeight + scrollTop + bottomDistance >= scrollHeight)) {
         reachBottomCallback()
       }
     }, 100))
   }
 
-  // TODO: 加载更多数据，现在存在问题，加载了新的数据之后滚动条会滚回顶部
-  loadMore = (dataSource: TDataSource[]) => {
-    this.initImage(dataSource)
+  // TODO: 加载更多数据，现在存在问题，在移动端加载了新的数据之后滚动条会滚回顶部
+  loadMore = async (dataSource: TDataSource[]) => {
+    this.initImage(dataSource);
   }
 
   destroy = () => {

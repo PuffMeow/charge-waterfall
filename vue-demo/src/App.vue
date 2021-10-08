@@ -1,15 +1,15 @@
 <template>
   <div id="app">
     <button @click="setIsOpen()">测试销毁destroy事件</button>
-    <HelloWorld v-if="isOpen" />
+    <Waterfall v-if="isOpen" />
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import Waterfall from './components/Waterfall.vue'
 export default {
   name: 'App',
-  components: { HelloWorld },
+  components: { Waterfall },
   data() {
     return {
       isOpen: true,

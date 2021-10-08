@@ -1,8 +1,8 @@
 export interface TOptions {
   /** 装载图片的父容器 */
   container: string | Element | null
-  /** 图片数据源 [{src: "xxx"}] */
-  dataSource: TDataSource[]
+  /** 初始化数据源 */
+  initialData: TDataSource[]
   /** 装载img标签的外层盒子class属性，默认 waterfall-img-container */
   imgContainerClass?: string
   /** img标签的class属性，默认 waterfall-img */
@@ -19,6 +19,9 @@ export interface TOptions {
   gapY?: number
   /** 是否响应式改变布局宽度 */
   resizable?: boolean
+  /** 触底事件触发时离底部的距离 */
+  bottomDistance: number
+  /** 点击对应的项，回调参数是对应项的dataSource和点击event事件 */
   onClick?: (dataSource: TDataSource, event: Event) => void
   /** 传入要渲染的元素模板字符串，例如 `<div>Title</div>` */
   render?: (dataSource: TDataSource) => string

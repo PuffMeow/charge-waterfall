@@ -17,11 +17,34 @@ export default {
     nodeResolve(),
     commonjs(),
     typescript(),
-    // terser(),
+    terser(),
     babel({
       babelHelpers: 'runtime',
       extensions: ['.js', '.ts', '.tsx'],
-      exclude: 'node_modules/**'
+      exclude: 'node_modules/**',
+      presets: [
+        [
+          "@babel/env",
+          {
+            "modules": false,
+            "useBuiltIns": "usage",
+            "corejs": {
+              "version": 3, // 使用core-js@3
+              "proposals": true,
+            },
+            "loose": true
+          },
+        ]
+      ],
+      plugins: [
+        "@babel/plugin-external-helpers",
+        [
+          "@babel/plugin-transform-runtime",
+          {
+            "useESModules": true
+          }
+        ]
+      ]
     })
   ]
 }
