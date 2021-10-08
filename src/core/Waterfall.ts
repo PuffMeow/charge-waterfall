@@ -63,7 +63,7 @@ export default class Waterfall {
     await Promise.allSettled(dataSource.map(item => item.src && loadAsyncImage(item.src)))
     const containerChildrens: HTMLElement[] = []
     const fragment = document.createDocumentFragment();
-    dataSource.forEach((item, index) => {
+    dataSource.forEach(item => {
       const div = document.createElement('div')
       div.className = imgContainerClass!
       if (item.src) {
@@ -77,12 +77,12 @@ export default class Waterfall {
         const bottomBox = document.createElement('div')
         bottomBox.className = bottomContainerClass!
         if (item.src) bottomBox.style.marginTop = '-4px'
-        bottomBox.innerHTML = render(item, index)
+        bottomBox.innerHTML = render(item)
         div.appendChild(bottomBox)
       }
 
       div.onclick = (e) => {
-        onClick?.(item, index, e)
+        onClick?.(item, e)
       }
       containerChildrens.push(div)
       fragment.appendChild(div)

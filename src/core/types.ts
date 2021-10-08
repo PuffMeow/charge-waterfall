@@ -19,9 +19,9 @@ export interface TOptions {
   gapY?: number
   /** 是否响应式改变布局宽度 */
   resizable?: boolean
-  onClick?: (dataSource: TDataSource, index: number, event: Event) => void
+  onClick?: (dataSource: TDataSource, event: Event) => void
   /** 传入要渲染的元素模板字符串，例如 `<div>Title</div>` */
-  render?: (dataSource: TDataSource, index: number) => string
+  render?: (dataSource: TDataSource) => string
 }
 
 export interface TDataSource<T = any> {
