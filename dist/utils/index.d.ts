@@ -1,3 +1,3 @@
 export declare function throttle(fn: Function, wait?: number): (this: any, ...args: any[]) => void;
 export declare function debounce(fn: Function, wait?: number): (this: any, ...args: any[]) => void;
-export declare function loadAsyncImage(imageUrl: string): Promise<unknown>;
+export declare function loadAsyncImage(imageUrl: string, defaultUrl: string): Promise<unknown>;

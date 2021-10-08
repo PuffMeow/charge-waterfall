@@ -58,17 +58,23 @@ export default class Waterfall {
       imgClass,
       imgContainerClass,
       bottomContainerClass,
-      render
+      render,
+      defaultImgUrl = ''
     } = this.options
-    await Promise.allSettled(dataSource.map(item => item.src && loadAsyncImage(item.src)))
+    const res = await Promise.allSettled(dataSource.map(item => item.src && loadAsyncImage(item.src, defaultImgUrl)))
     const containerChildrens: HTMLElement[] = []
     const fragment = document.createDocumentFragment();
-    dataSource.forEach(item => {
+    dataSource.forEach((item, index) => {
       const div = document.createElement('div')
       div.className = imgContainerClass!
       if (item.src) {
         const img = document.createElement('img')
+        img.style.verticalAlign = 'bottom'
         img.src = item.src
+        console.log(res[index].status)
+        if (res[index].status === 'rejected') {
+          img.src = defaultImgUrl
+        }
         img.alt = item?.alt || 'image'
         img.className = imgClass!
         div.appendChild(img)
@@ -76,7 +82,6 @@ export default class Waterfall {
       if (render) {
         const bottomBox = document.createElement('div')
         bottomBox.className = bottomContainerClass!
-        if (item.src) bottomBox.style.marginTop = '-4px'
         bottomBox.innerHTML = render(item)
         div.appendChild(bottomBox)
       }
@@ -110,7 +115,8 @@ export default class Waterfall {
         if (render) {
           const bottomContainer = item.querySelector(`.${bottomContainerClass}`) as HTMLElement
           bottomContainer.style.width = width + 'px'
-          imgContainerHeight = (img?.height || 0) + (bottomContainer?.clientHeight || 0)
+          imgContainerHeight = (img?.height || 50) + (bottomContainer?.clientHeight || 0)
+          console.log('imgContainerHeight', imgContainerHeight)
         } else {
           imgContainerHeight = img?.height || 0
         }

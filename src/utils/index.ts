@@ -23,11 +23,14 @@ export function debounce(fn: Function, wait: number = 100) {
   }
 }
 
-export function loadAsyncImage(imageUrl: string) {
+export function loadAsyncImage(imageUrl: string, defaultUrl: string) {
   return new Promise((resolve, reject) => {
     const img = new Image()
     img.src = imageUrl
     img.onload = resolve
-    img.onerror = reject
+    img.onerror = (e) => {
+      img.src = defaultUrl
+      reject(e)
+    }
   })
 }

@@ -17,6 +17,8 @@ export interface TOptions {
   gapX?: number
   /** 元素垂直间距 */
   gapY?: number
+  /** 图片加载失败时会加载这里设置的默认占位图 */
+  defaultImgUrl?: string
   /** 是否响应式改变布局宽度 */
   resizable?: boolean
   /** 触底事件触发时离底部的距离 */
