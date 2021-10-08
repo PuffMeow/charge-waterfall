@@ -69,8 +69,8 @@ export default {
       dataSource: this.dataSource,
       column: 2,
       resizable: true,
-      render: (dataSource, index) =>
-        `<div>这是${dataSource.data?.name} - ${index + 1}</div>
+      render: (dataSource) =>
+        `<div>这是${dataSource.data?.name}}</div>
         <div>哈哈哈哈哈</div>`,
     })
 
