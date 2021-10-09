@@ -16,7 +16,7 @@ export default class Waterfall {
     resizable: true
   }
   private items: HTMLElement[] = []  //存储子元素
-  private itemHeight: number[] = []  //每列的宽度
+  private itemHeight: number[] = []  //每列的高度
   private store: any = {}
 
   constructor(options: TOptions) {
