@@ -84,6 +84,7 @@
 </template>
 
 <script>
+// import Waterfall from 'charge-waterfall'
 import Waterfall from '../../../dist/index.js'
 export default {
   name: 'Waterfall',
@@ -149,7 +150,6 @@ export default {
       initialData: this.initialData,
       column: 2,
       resizable: true,
-      bottomDistance: 200,
       defaultImgUrl:
         'https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fhbimg.b0.upaiyun.com%2Ffbf18a5314f750da671711dfb176cf8791fbc687153d-g7YSBF_fw658&refer=http%3A%2F%2Fhbimg.b0.upaiyun.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1636300149&t=84cd1f7a4fe131edd66638bd44f3496d',
       render: (dataSource) =>
@@ -160,28 +160,37 @@ export default {
       },
     })
 
-    this.waterfall.onReachBottom(() => {
-      console.log('触底')
+    this.waterfall.onReachBottom(async () => {
       if (this.isLoading) return
+      // 加锁防止重复请求
       this.isLoading = true
-      setTimeout(() => {
-        this.waterfall.loadMore([
-          {
-            src: 'https://baidu.com/image_search/src=http%3A%2F%2Fpic.jj20.com%2Fup%2Fallimg%2Fmn02%2F123120192I5%2F201231192I5-0.jpg&refer=http%3A%2F%2Fpic.jj20.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1636102674&t=d4343c530fd669f622d259984974a365',
-            data: {
-              name: `${Math.floor(Math.random() * 100)}`,
-            },
+      // 模拟一个异步请求，拿到异步请求的数据之后塞进loadMore里面
+      console.log('触底')
+      await this.sleep(2000)
+      this.waterfall.loadMore([
+        {
+          src: 'https://baidu.com/image_search/src=http%3A%2F%2Fpic.jj20.com%2Fup%2Fallimg%2Fmn02%2F123120192I5%2F201231192I5-0.jpg&refer=http%3A%2F%2Fpic.jj20.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1636102674&t=d4343c530fd669f622d259984974a365',
+          data: {
+            name: `${Math.floor(Math.random() * 100)}`,
           },
-          {
-            src: 'https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fpic.jj20.com%2Fup%2Fallimg%2Fmn02%2F062919233114%2F1Z629233114-5.jpg&refer=http%3A%2F%2Fpic.jj20.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1636017833&t=4ddaf1b496ec72d9a24a0d21f9019733',
-            data: {
-              name: `${Math.floor(Math.random() * 100)}`,
-            },
+        },
+        {
+          src: 'https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fpic.jj20.com%2Fup%2Fallimg%2Fmn02%2F062919233114%2F1Z629233114-5.jpg&refer=http%3A%2F%2Fpic.jj20.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1636017833&t=4ddaf1b496ec72d9a24a0d21f9019733',
+          data: {
+            name: `${Math.floor(Math.random() * 100)}`,
           },
-        ])
-        this.isLoading = false
-      }, 2000)
+        },
+      ])
+      this.isLoading = false
     })
+  },
+
+  methods: {
+    sleep(wait) {
+      return new Promise((resolve) => {
+        setTimeout(resolve, wait)
+      })
+    },
   },
 
   destroyed() {

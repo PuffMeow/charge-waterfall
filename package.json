@@ -1,6 +1,6 @@
 {
-  "name": "water-fall",
-  "version": "0.0.3",
+  "name": "charge-waterfall",
+  "version": "0.0.4",
   "description": "使用TypeScript开发的瀑布流布局",
   "main": "index.js",
   "scripts": {

@@ -11,6 +11,7 @@
     "strictFunctionTypes": true,
     "noImplicitThis": true,
     "skipLibCheck": true,
-    "declaration": true
+    "declaration": true,
+    "downlevelIteration": true
   }
 }

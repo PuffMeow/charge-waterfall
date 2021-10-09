@@ -63,7 +63,6 @@ export default class Waterfall {
       defaultImgUrl = ''
     } = this.options
     const res = await Promise.allSettled(dataSource.map(item => item.src && loadAsyncImage(item.src)))
-    console.log('res', res)
     const containerChildrens: HTMLElement[] = []
     const fragment = document.createDocumentFragment();
     dataSource.forEach(async (item, index) => {
@@ -157,9 +156,9 @@ export default class Waterfall {
 
   /** 触底时的回调函数 */
   onReachBottom = (reachBottomCallback: () => void) => {
-    const { bottomDistance = 100 } = this.options
-    if (bottomDistance < 100) {
-      throw Error('bottomDistance，触底事件离底部触发的距离不能小于100')
+    const { bottomDistance = 50 } = this.options
+    if (bottomDistance < 50) {
+      throw Error('bottomDistance，触底事件离底部触发的距离不能小于50')
     }
     window.addEventListener('scroll', this.store.debounceScroll = debounce(() => {
       const { clientHeight, scrollTop, scrollHeight } = document.documentElement

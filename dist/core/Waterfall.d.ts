@@ -13,7 +13,10 @@ export default class Waterfall {
     private computePosition;
     private refreshContainerHeight;
     private resize;
+    /** 触底时的回调函数 */
     onReachBottom: (reachBottomCallback: () => void) => void;
-    loadMore: (dataSource: TDataSource[]) => Promise<void>;
+    /** 触底加载更多 */
+    loadMore: (dataSource: TDataSource[]) => void;
+    /** 销毁监听的scroll事件和resize事件 */
     destroy: () => void;
 }
