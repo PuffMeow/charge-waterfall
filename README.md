@@ -30,6 +30,8 @@ yarn add charge-waterfall
 
 ### 使用
 
+在TS中使用可以引入类型，如果没有用到TS可以不需要导入类型
+
 ```typescript
 import Waterfall, { TOptions, TDataSource } from 'charge-waterfall'
 
@@ -38,7 +40,17 @@ const options: TOptions = {
 }
 
 const waterfall = new Waterfall(options)
+
+//纯JS的话
+const waterfall = new Waterfall({
+    //具体选项
+})
 ```
+
+### 使用的注意事项
+
+- container父盒子容器必须是个空容器，里面不能有其它的内容
+- 使用触底加载更多进行请求时记得加个锁（具体可以看下面的例子代码），否则有可能会进行重复请求
 
 #### TOptions字段
 
