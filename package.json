@@ -1,22 +1,13 @@
 {
   "name": "charge-waterfall",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "一个使用纯TypeScript编写的适用于PC端的瀑布流工具插件，定宽不定高。简单好用，配置方便，纯中文提示，即插即用。适用于JS、Vue、React、Angular",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "rollup -c"
+    "build": "node script/publish.js && rollup -c"
   },
-  "keywords": [
-    "瀑布流",
-    "布局",
-    "Vue",
-    "React",
-    "JavaScript",
-    "TypeScript",
-    "Waterfall",
-    "rollup"
-  ],
+  "keywords": ["瀑布流", "布局", "Vue", "React", "JavaScript", "TypeScript", "Waterfall", "rollup"],
   "author": "JiquanWang",
   "license": "MIT",
   "repository": {

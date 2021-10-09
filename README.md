@@ -56,8 +56,8 @@ const waterfall = new Waterfall({
 
 | 属性                 | 描述                                                         | 默认值                     |      | 类型                                                |
 | -------------------- | ------------------------------------------------------------ | -------------------------- | ---- | --------------------------------------------------- |
-| container            | 装载图片的父容器，必须是一个空的元素，如.container或者 document.querySelector('.container') | 无                         | 必填 | HTMLElement \| string \| null                       |
-| initialData          | 初始化数据源                                                 | 无                         | 必填 | TDataSource[]                                       |
+| container            | 装载图片的父容器，必须是一个空的元素，如.container或者 document.querySelector('.container') | null                       | 必填 | HTMLElement \| string \| null                       |
+| initialData          | 初始化数据源                                                 | []                         | 必填 | TDataSource[]                                       |
 | column               | 水平方向展示的列数                                           | 2                          | 可选 | number                                              |
 | width                | 每一列的宽度                                                 | 容器宽度 / 列数            | 可选 | number                                              |
 | gapX                 | 元素水平间距                                                 | 0                          | 可选 | number                                              |
@@ -97,7 +97,19 @@ waterfall.destroy()
 | loadMore      | 加载更多元素，用来往容器中塞新数据 | 和initialData一样的类型TDataSource[] |
 | destroy       | 销毁监听的scroll事件和resize事件   | 无                                   |
 
+### 默认生成的DOM结构
 
+```html
+<div class="container">
+    <div class="waterfall-img-container">
+        <img class="waterfall-img">
+        //只有在render模式下才会渲染该标签
+        <div class="waterfall-bottom-container">
+            //render属性里的内容
+        </div>
+    </div>
+</div>
+```
 
 ### 使用方式
 
@@ -116,7 +128,10 @@ waterfall.destroy()
 ```vue
 <template>
   <div class="hello">
+    <!-- 装图片的容器 ，必须是空的-->
     <div class="container"></div>
+
+    <!-- 这里的内容是Loading图片 -->
     <div
       v-if="isLoading"
       style="display: flex; justify-content: center; align-items: center"
@@ -200,8 +215,8 @@ waterfall.destroy()
 </template>
 
 <script>
-// import Waterfall from 'charge-waterfall'
-import Waterfall from '../../../dist/index.js'
+import Waterfall from 'charge-waterfall'
+// import Waterfall from '../../../dist/index.js'
 export default {
   name: 'Waterfall',
   data() {
@@ -262,19 +277,15 @@ export default {
   },
   mounted() {
     this.waterfall = new Waterfall({
-      //装载图片的容器，必须是个空容器
       container: '.container',
-      //初始化的数据
       initialData: this.initialData,
-      column: 2,
+      column: 3,
       resizable: true,
-      // 默认图片
-      defaultImgUrl:      'https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fhbimg.b0.upaiyun.com%2Ffbf18a5314f750da671711dfb176cf8791fbc687153d-g7YSBF_fw658&refer=http%3A%2F%2Fhbimg.b0.upaiyun.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1636300149&t=84cd1f7a4fe131edd66638bd44f3496d',
-      // 自定义渲染的内容
+      defaultImgUrl:
+        'https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fhbimg.b0.upaiyun.com%2Ffbf18a5314f750da671711dfb176cf8791fbc687153d-g7YSBF_fw658&refer=http%3A%2F%2Fhbimg.b0.upaiyun.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1636300149&t=84cd1f7a4fe131edd66638bd44f3496d',
       render: (dataSource) =>
         `<div>这是${dataSource.data?.name}</div>
         <div>哈哈哈哈哈</div>`,
-      // 点击事件，返回点击项对应的数据
       onClick: (data, event) => {
         console.log(data, event)
       },
@@ -445,6 +456,9 @@ function App() {
     <div className="App">
       {/* 装载图片的空容器 */}
       <div className='container'></div>
+
+
+	  {/* 这里的内容是Loading图片 */}
       {isLoading && <div
         style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
       >

@@ -6,7 +6,6 @@ export default class Waterfall {
     private itemHeight;
     private store;
     constructor(options: TOptions);
-    private initDefaultValue;
     private init;
     private initImage;
     private createContent;

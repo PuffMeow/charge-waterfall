@@ -3,27 +3,29 @@ import { debounce, loadAsyncImage, throttle } from "../utils/index";
 import type { TOptions } from "./types";
 
 export default class Waterfall {
-  private options
+  private options: TOptions = {
+    container: null,
+    initialData: [],
+    imgClass: 'waterfall-img',
+    imgContainerClass: 'waterfall-img-container',
+    bottomContainerClass: 'waterfall-bottom-container',
+    column: 2,
+    gapX: 0,
+    gapY: 0,
+    bottomDistance: 50,
+    resizable: true
+  }
   private items: HTMLElement[] = []  //存储子元素
   private itemHeight: number[] = []  //每列的宽度
   private store: any = {}
 
   constructor(options: TOptions) {
-    this.options = options
-    this.initDefaultValue()
+    this.options = Object.assign(this.options, options)
     this.init()
   }
 
-  private initDefaultValue = () => {
-    const { imgContainerClass, imgClass, bottomContainerClass, column } = this.options
-    if (!column) this.options.column = 2
-    if (!imgContainerClass) this.options.imgContainerClass = 'waterfall-img-container'
-    if (!imgClass) this.options.imgClass = 'waterfall-img'
-    if (!bottomContainerClass) this.options.bottomContainerClass = 'waterfall-bottom-container'
-  }
-
   private init = async () => {
-    let { resizable = false, initialData, column } = this.options
+    let { resizable, initialData, column } = this.options
     if (typeof this.options.container === 'string') {
       if (!this.options.container.startsWith('.') && !this.options.container.startsWith('#')) {
         throw Error(`请按照标准的dom查询条件传入，如'.container'或'#container'`)
@@ -105,7 +107,7 @@ export default class Waterfall {
 
   private computePosition = (containerChildrens: HTMLElement[], isResize: boolean = false) => {
     requestAnimationFrame(() => {
-      let { options: { gapX = 0, gapY = 0, column, width, bottomContainerClass, render } } = this
+      let { options: { gapX, gapY, column, width, bottomContainerClass, render } } = this
       width = width || (this.options.container as HTMLElement).clientWidth / column!
 
       isResize && (this.itemHeight = new Array(column).fill(0))
@@ -131,9 +133,9 @@ export default class Waterfall {
         }
 
         let idx = this.itemHeight.indexOf(Math.min(...this.itemHeight))  //找到高度最小的元素的下标
-        item.style.left = idx * (width! + gapX) + 'px'
+        item.style.left = idx * (width! + gapX!) + 'px'
         item.style.top = this.itemHeight[idx] + 'px'
-        this.itemHeight[idx] += Math.round((imgContainerHeight! * width! / width!) + gapY)
+        this.itemHeight[idx] += Math.round((imgContainerHeight! * width! / width!) + gapY!)
         item.style.transition = 'opacity 0.2s'
         item.style.opacity = '1'
       });
@@ -154,14 +156,14 @@ export default class Waterfall {
 
   /** 触底时的回调函数 */
   onReachBottom = (reachBottomCallback: () => void) => {
-    const { bottomDistance = 50 } = this.options
-    if (bottomDistance < 50) {
+    const { bottomDistance } = this.options
+    if (bottomDistance! < 50) {
       throw Error('bottomDistance，触底事件离底部触发的距离不能小于50')
     }
     window.addEventListener('scroll', this.store.debounceScroll = debounce(() => {
       const { clientHeight, scrollTop, scrollHeight } = document.documentElement
 
-      if ((clientHeight + scrollTop + bottomDistance >= scrollHeight)) {
+      if ((clientHeight + scrollTop + bottomDistance! >= scrollHeight)) {
         reachBottomCallback()
       }
     }, 100))

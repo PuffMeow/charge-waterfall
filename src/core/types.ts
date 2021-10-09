@@ -22,7 +22,7 @@ export interface TOptions {
   /** 是否响应式改变布局宽度 */
   resizable?: boolean
   /** 触底事件触发时离底部的距离 */
-  bottomDistance: number
+  bottomDistance?: number
   /** 点击对应的项，回调参数是对应项的dataSource和点击event事件 */
   onClick?: (dataSource: TDataSource, event: Event) => void
   /** 传入要渲染的元素模板字符串，例如 `<div>Title</div>` */
