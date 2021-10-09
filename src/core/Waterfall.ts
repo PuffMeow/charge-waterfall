@@ -38,7 +38,7 @@ export default class Waterfall {
 
     const items = Array.from((this.options.container as HTMLElement).children) as HTMLElement[]
     if (items.length) {
-      throw Error('container中存在其它元素，请确保container容器中没有其它子元素')
+      throw Error(`container中存在其它元素，请确保container容器为空并且没有其它子元素，如<div class='container'></div>`)
     }
     this.itemHeight = new Array(column).fill(0);
     (this.options.container as HTMLElement).style.position = 'relative'
@@ -115,8 +115,11 @@ export default class Waterfall {
         if (render) {
           const bottomContainer = item.querySelector(`.${bottomContainerClass}`) as HTMLElement
           bottomContainer.style.width = width + 'px'
-          imgContainerHeight = (img?.height || 50) + (bottomContainer?.clientHeight || 0)
-          console.log('imgContainerHeight', imgContainerHeight)
+          if (img) {
+            imgContainerHeight = (img?.height || 50) + (bottomContainer?.clientHeight || 0)
+          } else {
+            imgContainerHeight = bottomContainer?.clientHeight || 0
+          }
         } else {
           imgContainerHeight = img?.height || 0
         }
