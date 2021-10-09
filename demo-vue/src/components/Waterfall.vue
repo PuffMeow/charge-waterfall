@@ -84,8 +84,8 @@
 </template>
 
 <script>
-// import Waterfall from 'charge-waterfall'
-import Waterfall from '../../../dist/index.js'
+import Waterfall from 'charge-waterfall'
+// import Waterfall from '../../../dist/index.js'
 export default {
   name: 'Waterfall',
   data() {
@@ -120,7 +120,7 @@ export default {
         },
         {
           data: {
-            name: '第五张图',
+            name: '第五张图，这是无图模式',
           },
         },
         {
@@ -164,8 +164,8 @@ export default {
       if (this.isLoading) return
       // 加锁防止重复请求
       this.isLoading = true
-      // 模拟一个异步请求，拿到异步请求的数据之后塞进loadMore里面
       console.log('触底')
+      // 模拟一个异步请求，拿到异步请求的数据之后塞进loadMore里面
       await this.sleep(2000)
       this.waterfall.loadMore([
         {

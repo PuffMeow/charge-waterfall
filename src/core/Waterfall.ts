@@ -65,9 +65,7 @@ export default class Waterfall {
     const res = await Promise.allSettled(dataSource.map(item => item.src && loadAsyncImage(item.src)))
     const containerChildrens: HTMLElement[] = []
     const fragment = document.createDocumentFragment();
-    dataSource.forEach(async (item, index) => {
 
-    });
     for (let [index, item] of dataSource.entries()) {
       const div = document.createElement('div')
       div.className = imgContainerClass!
