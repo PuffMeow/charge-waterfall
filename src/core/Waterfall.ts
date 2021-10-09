@@ -38,7 +38,8 @@ export default class Waterfall {
 
     const items = Array.from((this.options.container as HTMLElement).children) as HTMLElement[]
     if (items.length) {
-      throw Error(`container中存在其它元素，请确保container容器为空并且没有其它子元素，如<div class='container'></div>`)
+      console.warn(`container中存在其它元素，使用时请确保container为空的容器。当前已为您清空该容器。`)
+      this.options.container.innerHTML = ''
     }
     this.itemHeight = new Array(column).fill(0);
     (this.options.container as HTMLElement).style.position = 'relative'
@@ -61,19 +62,27 @@ export default class Waterfall {
       render,
       defaultImgUrl = ''
     } = this.options
-    const res = await Promise.allSettled(dataSource.map(item => item.src && loadAsyncImage(item.src, defaultImgUrl)))
+    const res = await Promise.allSettled(dataSource.map(item => item.src && loadAsyncImage(item.src)))
+    console.log('res', res)
     const containerChildrens: HTMLElement[] = []
     const fragment = document.createDocumentFragment();
-    dataSource.forEach((item, index) => {
+    dataSource.forEach(async (item, index) => {
+
+    });
+    for (let [index, item] of dataSource.entries()) {
       const div = document.createElement('div')
       div.className = imgContainerClass!
       if (item.src) {
         const img = document.createElement('img')
         img.style.verticalAlign = 'bottom'
         img.src = item.src
-        console.log(res[index].status)
         if (res[index].status === 'rejected') {
-          img.src = defaultImgUrl
+          try {
+            const defaultImg = await loadAsyncImage(defaultImgUrl)
+            img.src = defaultImg.src
+          } catch (e) {
+            console.error(`该默认图片加载失败：${defaultImgUrl}`)
+          }
         }
         img.alt = item?.alt || 'image'
         img.className = imgClass!
@@ -91,7 +100,7 @@ export default class Waterfall {
       }
       containerChildrens.push(div)
       fragment.appendChild(div)
-    });
+    }
     (this.options.container as HTMLElement).append(fragment)
 
     return containerChildrens
@@ -108,7 +117,7 @@ export default class Waterfall {
         item.style.opacity = '0'
         const img = item.querySelector('img') as HTMLImageElement
         if (img) img.style.width = width + 'px'
-        let imgContainerHeight
+        let imgContainerHeight: number
         item.style.width = width + 'px'
         item.style.position = 'absolute'
         // 兼容没有传入图片src的模式
@@ -116,7 +125,7 @@ export default class Waterfall {
           const bottomContainer = item.querySelector(`.${bottomContainerClass}`) as HTMLElement
           bottomContainer.style.width = width + 'px'
           if (img) {
-            imgContainerHeight = (img?.height || 50) + (bottomContainer?.clientHeight || 0)
+            imgContainerHeight = (img?.height || 30) + (bottomContainer?.clientHeight || 0)
           } else {
             imgContainerHeight = bottomContainer?.clientHeight || 0
           }
@@ -127,7 +136,7 @@ export default class Waterfall {
         let idx = this.itemHeight.indexOf(Math.min(...this.itemHeight))  //找到高度最小的元素的下标
         item.style.left = idx * (width! + gapX) + 'px'
         item.style.top = this.itemHeight[idx] + 'px'
-        this.itemHeight[idx] += Math.round((imgContainerHeight * width! / width!) + gapY)
+        this.itemHeight[idx] += Math.round((imgContainerHeight! * width! / width!) + gapY)
         item.style.transition = 'opacity 0.2s'
         item.style.opacity = '1'
       });
@@ -146,6 +155,7 @@ export default class Waterfall {
     }, 50))
   }
 
+  /** 触底时的回调函数 */
   onReachBottom = (reachBottomCallback: () => void) => {
     const { bottomDistance = 100 } = this.options
     if (bottomDistance < 100) {
@@ -160,11 +170,12 @@ export default class Waterfall {
     }, 100))
   }
 
-  // TODO: 加载更多数据，现在存在问题，在移动端加载了新的数据之后滚动条会滚回顶部
-  loadMore = async (dataSource: TDataSource[]) => {
+  /** 触底加载更多 */
+  loadMore = (dataSource: TDataSource[]) => {
     this.initImage(dataSource);
   }
 
+  /** 销毁监听的scroll事件和resize事件 */
   destroy = () => {
     window.removeEventListener('resize', this.store.throttleResize)
     window.removeEventListener('scroll', this.store.debounceScroll)
