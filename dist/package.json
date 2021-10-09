@@ -1,7 +1,7 @@
 {
-  "name": "charge-waterfall",
-  "version": "0.0.2",
-  "description": "使用TypeScript开发的PC端瀑布流布局，简单好用。支持在原生JS、Vue、React页面中使用。",
+  "name": "water-fall",
+  "version": "0.0.3",
+  "description": "使用TypeScript开发的瀑布流布局",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -9,21 +9,18 @@
   },
   "keywords": [
     "瀑布流",
-    "布局",
-    "Vue",
-    "React",
     "TypeScript",
-    "JavaScript",
+    "布局",
     "Waterfall",
     "rollup"
   ],
-  "author": "JiquanWang99",
+  "author": "JiquanWang",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/JiquanWang99/charge-waterfall"
+    "url": ""
   },
-  "homepage": "https://github.com/JiquanWang99/charge-waterfall",
+  "homepage": "",
   "broswer": "dist/index.js",
   "devDependencies": {
     "@babel/core": "^7.15.5",
@@ -38,6 +35,5 @@
     "rollup-plugin-typescript2": "^0.30.0",
     "tslib": "^2.3.1",
     "typescript": "^4.4.3"
-  },
-  "dependencies": {}
+  }
 }
