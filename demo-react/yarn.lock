@@ -3567,10 +3567,12 @@ char-regex@^1.0.2:
   resolved "https://registry.nlark.com/char-regex/download/char-regex-1.0.2.tgz?cache=0&sync_timestamp=1622809103243&other_urls=https%3A%2F%2Fregistry.nlark.com%2Fchar-regex%2Fdownload%2Fchar-regex-1.0.2.tgz#d744358226217f981ed58f479b1d6bcc29545dcf"
   integrity sha1-10Q1giYhf5ge1Y9Hmx1rzClUXc8=
 
-charge-waterfall@^0.0.4:
-  version "0.0.4"
-  resolved "https://registry.yarnpkg.com/charge-waterfall/-/charge-waterfall-0.0.4.tgz#ec7e72d24bee4d4a36544deece5d9ad039cd249f"
-  integrity sha512-p5NPx9PAg8VgUTKTxbdLquYeHVDxfnp0d70CD11QjcEU4gZrM13v69zz2Ke4wl86WCqt4aK0ltFSpSf+QbISDw==
+charge-waterfall@^0.0.8:
+  version "0.0.8"
+  resolved "https://registry.yarnpkg.com/charge-waterfall/-/charge-waterfall-0.0.8.tgz#75c89c36b202b58623fa73c51277285a856f2749"
+  integrity sha512-cmVopr6gOGo/NeP4AhKYLXm62pxmWFmk5BODMqt0Ip1ids+t7uHhTOSS+WpWP1mwXewW4admq0TxdKye5RZ3+w==
+  dependencies:
+    lodash.merge "^4.6.2"
 
 check-types@^11.1.1:
   version "11.1.2"

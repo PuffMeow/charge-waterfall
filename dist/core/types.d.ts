@@ -19,6 +19,8 @@ export interface TOptions {
     gapY?: number;
     /** 图片加载失败时会加载这里设置的默认占位图 */
     defaultImgUrl?: string;
+    /** 动画配置项 */
+    animation?: TAnimationOptions;
     /** 是否响应式改变布局宽度 */
     resizable?: boolean;
     /** 触底事件触发时离底部的距离 */
@@ -34,4 +36,11 @@ export interface TDataSource<T = any> {
     /** 自定义的data数据，如果在TS中使用可以通过泛型来定义data中的类型 */
     data: T;
     alt?: string;
+}
+export declare type TAnimationNames = 'none' | 'fadeInDown' | 'fadeInUp' | 'fadeInLeft' | 'fadeInRight';
+export interface TAnimationOptions {
+    /** 动画名称 */
+    name?: TAnimationNames;
+    /** 动画持续时间，单位(秒:s) */
+    duration?: number;
 }

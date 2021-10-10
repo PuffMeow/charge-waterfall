@@ -7,7 +7,7 @@
     "build": "vue-cli-service build"
   },
   "dependencies": {
-    "charge-waterfall": "^0.0.4",
+    "charge-waterfall": "^0.0.8",
     "core-js": "^3.6.5",
     "vue": "^2.6.11"
   },

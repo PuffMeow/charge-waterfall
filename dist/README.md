@@ -1,6 +1,6 @@
 ### 简介
 
-一个使用纯**TypeScript**编写的适用于**PC端**(移动端暂时未兼容)的瀑布流工具插件，定宽不定高。简单好用，配置方便，纯中文提示，即插即用。适用于JS、Vue、React、Angular(暂时没提供Demo)。具体的Vue和React相关Demo可以查看[Git仓库](https://github.com/JiquanWang99/charge-waterfall)。**维护不易，欢迎大家多多♥star♥**
+一个使用纯**TypeScript**编写的适用于**PC端**(移动端暂时未兼容)的瀑布流工具插件，定宽不定高。简单好用，配置方便，纯中文提示，即插即用。适用于JS、Vue、React、Angular(暂时没提供Demo)。具体的Vue和React相关Demo可以查看[Git仓库](https://github.com/JiquanWang99/charge-waterfall)。**维护不易，欢迎大家多多♥star⭐♥，也欢迎各位发现了问题给我提issue**
 
 ### 安装
 
@@ -20,11 +20,10 @@ yarn add charge-waterfall
 
 - 纯TS编写，拥有完善的类型提示
 - 拥有多个配置项
-
 - 自动定图片宽高
 - 默认占位图
 - 支持有图/无图模式
-
+- 支持开启图片加载完成后的淡入动画
 - 触底加载更多
 - 支持响应式渲染
 
@@ -62,6 +61,7 @@ const waterfall = new Waterfall({
 | width                | 每一列的宽度                                                 | 容器宽度 / 列数            | 可选 | number                                              |
 | gapX                 | 元素水平间距                                                 | 0                          | 可选 | number                                              |
 | gapY                 | 元素垂直间距                                                 | 0                          | 可选 | number                                              |
+| animation            | 淡入动画配置， animation: {name: "动画名称", duration: "动画持续时间(单位: 秒s)"} | 具体看下方                 | 可选 | TAnimationOptions                                   |
 | defaultImgUrl        | 有图模式下，图片渲染失败时会显示默认占位图，如果默认占位图显示也失败就会显示alt设置的默认字段`image` | 无                         | 可选 | string                                              |
 | resizable            | 是否开启响应式改变布局宽度                                   | true                       | 可选 | boolean                                             |
 | bottomDistance       | 触底事件触发时离底部的距离                                   | 50(单位"px")               | 可选 | number                                              |
@@ -73,6 +73,21 @@ const waterfall = new Waterfall({
 
 #### TDataSource类型
 
+```typescript
+new Waterfall({
+    //...其它配置项,
+    initialData: [
+        {
+            src: '图片url地址',
+            data: {
+                //存放的自定义数据
+            },
+            alt: '图片裂开时加载的文字'
+        }
+    ]
+})
+```
+
 ```
 interface TDataSource<T = any> {
   /** 图片url地址 */
@@ -83,10 +98,42 @@ interface TDataSource<T = any> {
 }
 ```
 
+#### TAnimationOptions动画配置
+
+```typescript
+new Waterfall({
+    //...其它配置项,
+    animation: {
+        name: 'fadeInDown',
+        duration: 0.5
+    }
+})
+```
+
+目前支持4种动画效果，动画名称默认值为none(不开启动画)，duration持续时间默认值为0.5
+
+- 从上往下淡入fadeInDown
+- 从下往上淡入fadeInUp
+- 从左往右淡入fadeInLeft
+- 从右往左淡入fadeInRight
+
+```typescript
+type TAnimationNames = 'none' | 'fadeInDown' | 'fadeInUp' | 'fadeInLeft' | 'fadeInRight'
+
+interface TAnimationOptions {
+  /** 动画名称 */
+  name?: TAnimationNames
+  /** 动画持续时间，单位(秒:s) */
+  duration?: number
+}
+```
+
 #### 实例上的方法
 
 ```typescript
-waterfall.onReachBottom(()=> {})
+waterfall.onReachBottom(()=> {
+    //回调函数
+})
 waterfall.loadMore([])
 waterfall.destroy()
 ```
@@ -279,7 +326,11 @@ export default {
     this.waterfall = new Waterfall({
       container: '.container',
       initialData: this.initialData,
-      column: 3,
+      column: 2,
+      animation: {
+        name: 'fadeInDown',
+        duration: 1,
+      },
       resizable: true,
       defaultImgUrl:
         'https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fhbimg.b0.upaiyun.com%2Ffbf18a5314f750da671711dfb176cf8791fbc687153d-g7YSBF_fw658&refer=http%3A%2F%2Fhbimg.b0.upaiyun.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1636300149&t=84cd1f7a4fe131edd66638bd44f3496d',
@@ -332,6 +383,7 @@ export default {
 
 <style scoped>
 </style>
+
 ```
 
 ### React中的使用方式

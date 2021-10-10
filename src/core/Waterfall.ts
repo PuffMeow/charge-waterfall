@@ -1,6 +1,7 @@
-import { TDataSource } from "../../dist/index";
 import { debounce, loadAsyncImage, throttle } from "../utils/index";
-import type { TOptions } from "./types";
+import type { TOptions, TDataSource } from "./types";
+import animationMap from '../animations/index'
+import merge from 'lodash.merge'
 
 export default class Waterfall {
   private options: TOptions = {
@@ -13,19 +14,24 @@ export default class Waterfall {
     gapX: 0,
     gapY: 0,
     bottomDistance: 50,
-    resizable: true
+    resizable: true,
+    animation: {
+      name: 'none',
+      duration: 0.5
+    }
   }
   private items: HTMLElement[] = []  //存储子元素
   private itemHeight: number[] = []  //每列的高度
   private store: any = {}
 
   constructor(options: TOptions) {
-    this.options = Object.assign(this.options, options)
+    this.options = merge(this.options, options)
+    console.log(this.options)
     this.init()
   }
 
   private init = async () => {
-    let { resizable, initialData, column } = this.options
+    const { resizable, initialData, column } = this.options
     if (typeof this.options.container === 'string') {
       if (!this.options.container.startsWith('.') && !this.options.container.startsWith('#')) {
         throw Error(`请按照标准的dom查询条件传入，如'.container'或'#container'`)
@@ -100,20 +106,23 @@ export default class Waterfall {
       containerChildrens.push(div)
       fragment.appendChild(div)
     }
-    (this.options.container as HTMLElement).append(fragment)
+    (this.options.container as HTMLElement).appendChild(fragment)
 
     return containerChildrens
   }
 
   private computePosition = (containerChildrens: HTMLElement[], isResize: boolean = false) => {
     requestAnimationFrame(() => {
-      let { options: { gapX, gapY, column, width, bottomContainerClass, render } } = this
+      let { options: { gapX, gapY, column, width, bottomContainerClass, render, animation } } = this
       width = width || (this.options.container as HTMLElement).clientWidth / column!
 
       isResize && (this.itemHeight = new Array(column).fill(0))
 
       containerChildrens.forEach(item => {
         item.style.opacity = '0'
+        if (animation!.name !== 'none') {
+          item.style.transform = animationMap[animation!.name!].start
+        }
         const img = item.querySelector('img') as HTMLImageElement
         if (img) img.style.width = width + 'px'
         let imgContainerHeight: number
@@ -136,8 +145,11 @@ export default class Waterfall {
         item.style.left = idx * (width! + gapX!) + 'px'
         item.style.top = this.itemHeight[idx] + 'px'
         this.itemHeight[idx] += Math.round((imgContainerHeight! * width! / width!) + gapY!)
-        item.style.transition = 'opacity 0.2s'
+        item.style.transition = `all ${animation!.duration}s ease`
         item.style.opacity = '1'
+        if (animation!.name !== 'none') {
+          item.style.transform = animationMap[animation!.name!].end
+        }
       });
 
       this.refreshContainerHeight()
@@ -163,7 +175,7 @@ export default class Waterfall {
     window.addEventListener('scroll', this.store.debounceScroll = debounce(() => {
       const { clientHeight, scrollTop, scrollHeight } = document.documentElement
 
-      if ((clientHeight + scrollTop + bottomDistance! >= scrollHeight)) {
+      if (clientHeight + scrollTop + bottomDistance! >= scrollHeight) {
         reachBottomCallback()
       }
     }, 100))

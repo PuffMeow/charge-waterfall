@@ -1,5 +1,4 @@
-import { TDataSource } from "../../dist/index";
-import type { TOptions } from "./types";
+import type { TOptions, TDataSource } from "./types";
 export default class Waterfall {
     private options;
     private items;

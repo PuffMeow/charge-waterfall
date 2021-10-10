@@ -151,7 +151,11 @@ export default {
     this.waterfall = new Waterfall({
       container: '.container',
       initialData: this.initialData,
-      column: 3,
+      column: 2,
+      animation: {
+        name: 'fadeInDown',
+        duration: 1,
+      },
       resizable: true,
       defaultImgUrl:
         'https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fhbimg.b0.upaiyun.com%2Ffbf18a5314f750da671711dfb176cf8791fbc687153d-g7YSBF_fw658&refer=http%3A%2F%2Fhbimg.b0.upaiyun.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1636300149&t=84cd1f7a4fe131edd66638bd44f3496d',
