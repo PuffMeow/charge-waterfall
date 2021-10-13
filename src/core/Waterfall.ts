@@ -13,7 +13,7 @@ export default class Waterfall {
     column: 2,
     gapX: 0,
     gapY: 0,
-    bottomDistance: 50,
+    bottomDistance: 100,
     resizable: true,
     animation: {
       name: 'none',
@@ -26,7 +26,6 @@ export default class Waterfall {
 
   constructor(options: TOptions) {
     this.options = merge(this.options, options)
-    console.log(this.options)
     this.init()
   }
 
@@ -46,7 +45,7 @@ export default class Waterfall {
 
     const items = Array.from((this.options.container as HTMLElement).children) as HTMLElement[]
     if (items.length) {
-      console.warn(`container中存在其它元素，使用时请确保container为空的容器。当前已为您清空该容器。`)
+      console.error(`container中存在其它元素，使用时请确保container为空的容器。当前已为您清空该容器。`)
       this.options.container.innerHTML = ''
     }
     this.itemHeight = new Array(column).fill(0);
@@ -70,17 +69,17 @@ export default class Waterfall {
       render,
       defaultImgUrl = ''
     } = this.options
-    const res = await Promise.allSettled(dataSource.map(item => item.src && loadAsyncImage(item.src)))
+    const res = await Promise.allSettled(dataSource.map(data => data?.src && loadAsyncImage(data.src)))
     const containerChildrens: HTMLElement[] = []
     const fragment = document.createDocumentFragment();
 
-    for (let [index, item] of dataSource.entries()) {
+    for (let [index, data] of dataSource.entries()) {
       const div = document.createElement('div')
       div.className = imgContainerClass!
-      if (item.src) {
+      if (data?.src) {
         const img = document.createElement('img')
         img.style.verticalAlign = 'bottom'
-        img.src = item.src
+        img.src = data.src
         if (res[index].status === 'rejected') {
           try {
             const defaultImg = await loadAsyncImage(defaultImgUrl)
@@ -89,19 +88,19 @@ export default class Waterfall {
             console.error(`该默认图片加载失败：${defaultImgUrl}`)
           }
         }
-        img.alt = item?.alt || 'image'
+        img.alt = data?.alt || 'image'
         img.className = imgClass!
         div.appendChild(img)
       }
       if (render) {
         const bottomBox = document.createElement('div')
         bottomBox.className = bottomContainerClass!
-        bottomBox.innerHTML = render(item)
+        bottomBox.innerHTML = render(data)
         div.appendChild(bottomBox)
       }
 
       div.onclick = (e) => {
-        onClick?.(item, e)
+        onClick?.(data, e)
       }
       containerChildrens.push(div)
       fragment.appendChild(div)
@@ -118,13 +117,15 @@ export default class Waterfall {
 
       isResize && (this.itemHeight = new Array(column).fill(0))
 
-      containerChildrens.forEach(item => {
+      for (let item of containerChildrens) {
         item.style.opacity = '0'
         if (animation!.name !== 'none') {
           item.style.transform = animationMap[animation!.name!].start
         }
-        const img = item.querySelector('img') as HTMLImageElement
-        if (img) img.style.width = width + 'px'
+        const img = item.querySelector('img')
+        if (img) {
+          img.style.width = width + 'px'
+        }
         let imgContainerHeight: number
         item.style.width = width + 'px'
         item.style.position = 'absolute'
@@ -145,19 +146,19 @@ export default class Waterfall {
         item.style.left = idx * (width! + gapX!) + 'px'
         item.style.top = this.itemHeight[idx] + 'px'
         this.itemHeight[idx] += Math.round((imgContainerHeight! * width! / width!) + gapY!)
-        item.style.transition = `all ${animation!.duration}s ease`
+        item.style.transition = `transform ${animation!.duration}s ease`
         item.style.opacity = '1'
         if (animation!.name !== 'none') {
           item.style.transform = animationMap[animation!.name!].end
         }
-      });
-
+      }
       this.refreshContainerHeight()
     })
   }
 
   private refreshContainerHeight = () => {
-    (this.options.container as HTMLElement).style.height = Math.max(...this.itemHeight) + 'px'
+    const max = Math.max(...this.itemHeight);
+    (this.options.container as HTMLElement).style.height = max + 'px'
   }
 
   private resize = () => {
@@ -169,8 +170,8 @@ export default class Waterfall {
   /** 触底时的回调函数 */
   onReachBottom = (reachBottomCallback: () => void) => {
     const { bottomDistance } = this.options
-    if (bottomDistance! < 50) {
-      throw Error('bottomDistance，触底事件离底部触发的距离不能小于50')
+    if (bottomDistance! < 100) {
+      throw Error('bottomDistance，触底事件离底部触发的距离不能小于100')
     }
     window.addEventListener('scroll', this.store.debounceScroll = debounce(() => {
       const { clientHeight, scrollTop, scrollHeight } = document.documentElement

@@ -27,8 +27,12 @@ export function loadAsyncImage(imageUrl: string): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
     const img = new Image()
     img.src = imageUrl
-    img.onload = () => {
+    if (img.complete) {
       resolve(img)
+    } else {
+      img.onload = () => {
+        resolve(img)
+      }
     }
     img.onerror = (e) => {
       reject(e)

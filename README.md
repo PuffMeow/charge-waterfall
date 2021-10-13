@@ -53,23 +53,23 @@ const waterfall = new Waterfall({
 
 #### TOptions字段
 
-| 属性                 | 描述                                                         | 默认值                     |      | 类型                                                |
-| -------------------- | ------------------------------------------------------------ | -------------------------- | ---- | --------------------------------------------------- |
-| container            | 装载图片的父容器，必须是一个空的元素，如.container或者 document.querySelector('.container') | null                       | 必填 | HTMLElement \| string \| null                       |
-| initialData          | 初始化数据源                                                 | []                         | 必填 | TDataSource[]                                       |
-| column               | 水平方向展示的列数                                           | 2                          | 可选 | number                                              |
-| width                | 每一列的宽度                                                 | 容器宽度 / 列数            | 可选 | number                                              |
-| gapX                 | 元素水平间距                                                 | 0                          | 可选 | number                                              |
-| gapY                 | 元素垂直间距                                                 | 0                          | 可选 | number                                              |
-| animation            | 淡入动画配置， animation: {name: "动画名称", duration: "动画持续时间(单位: 秒s)"} | 具体看下方                 | 可选 | TAnimationOptions                                   |
-| defaultImgUrl        | 有图模式下，图片渲染失败时会显示默认占位图，如果默认占位图显示也失败就会显示alt设置的默认字段`image` | 无                         | 可选 | string                                              |
-| resizable            | 是否开启响应式改变布局宽度                                   | true                       | 可选 | boolean                                             |
-| bottomDistance       | 触底事件触发时离底部的距离                                   | 50(单位"px")               | 可选 | number                                              |
-| imgContainerClass    | 渲染出来的图片容器的class属性                                | waterfall-img-container    | 可选 | string                                              |
-| imgClass             | 渲染出来的图片的class属性                                    | waterfall-img              | 可选 | string                                              |
-| bottomContainerClass | 装载img标签图片底部内容盒子的c                               | waterfall-bottom-container | 可选 | string                                              |
-| onClick              | 点击对应的项，回调参数是对应项的dataSource和点击event事件    | 无                         | 可选 | (*dataSource*: TDataSource, *event*: Event) => void |
-| render               | *传入要渲染的元素模板字符串，例如  `<div>Title</div>`*，回调参数是对应项的dataSource | 无                         | 可选 | (*dataSource*: TDataSource) => string               |
+| 属性                 | 描述                                                         | 默认值                      |      | 类型                                                |
+| -------------------- | ------------------------------------------------------------ | --------------------------- | ---- | --------------------------------------------------- |
+| container            | 装载图片的父容器，必须是一个空的元素，如.container或者 document.querySelector('.container') | null                        | 必填 | HTMLElement \| string \| null                       |
+| initialData          | 初始化数据源                                                 | []                          | 必填 | TDataSource[]                                       |
+| column               | 水平方向展示的列数                                           | 2                           | 可选 | number                                              |
+| width                | 每一列的宽度                                                 | 容器宽度 / 列数             | 可选 | number                                              |
+| gapX                 | 元素水平间距                                                 | 0                           | 可选 | number                                              |
+| gapY                 | 元素垂直间距                                                 | 0                           | 可选 | number                                              |
+| animation            | 淡入动画配置， animation: {name: "动画名称", duration: "动画持续时间(单位: 秒s)"} | 具体看下方                  | 可选 | TAnimationOptions                                   |
+| defaultImgUrl        | 有图模式下，图片渲染失败时会显示默认占位图，如果默认占位图显示也失败就会显示alt设置的默认字段`image` | 无                          | 可选 | string                                              |
+| resizable            | 是否开启响应式改变布局宽度                                   | true                        | 可选 | boolean                                             |
+| bottomDistance       | 触底事件触发时离底部的距离                                   | 100(单位:"px")，最小值: 100 | 可选 | number                                              |
+| imgContainerClass    | 渲染出来的图片容器的class属性                                | waterfall-img-container     | 可选 | string                                              |
+| imgClass             | 渲染出来的图片的class属性                                    | waterfall-img               | 可选 | string                                              |
+| bottomContainerClass | 装载img标签图片底部内容盒子的c                               | waterfall-bottom-container  | 可选 | string                                              |
+| onClick              | 点击对应的项，回调参数是对应项的dataSource和点击event事件    | 无                          | 可选 | (*dataSource*: TDataSource, *event*: Event) => void |
+| render               | *传入要渲染的元素模板字符串，例如  `<div>Title</div>`*，回调参数是对应项的dataSource | 无                          | 可选 | (*dataSource*: TDataSource) => string               |
 
 #### TDataSource类型
 
