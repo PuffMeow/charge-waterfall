@@ -152,7 +152,7 @@ export default {
       initialData: this.initialData,
       column: 2,
       animation: {
-        name: 'fadeInDown',
+        name: 'fadeInRight',
         duration: 1,
       },
       resizable: true,

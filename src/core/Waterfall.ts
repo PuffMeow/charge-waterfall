@@ -29,6 +29,7 @@ export default class Waterfall {
       throw Error('container实例不存在，请检查')
     }
 
+    (this.options.container as HTMLElement).style.overflowX = 'hidden'
     const items = Array.from((this.options.container as HTMLElement).children) as HTMLElement[]
     if (items.length) {
       console.error(`container中存在其它元素，使用时请确保container为空的容器。当前已为您清空该容器。`)

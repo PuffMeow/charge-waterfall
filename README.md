@@ -1,6 +1,6 @@
 ### 简介
 
-一个使用纯**TypeScript**编写的适用于**PC端**(移动端暂时未兼容)的瀑布流工具插件，定宽不定高。简单好用，配置方便，纯中文提示，即插即用。适用于JS、Vue、React、Angular(暂时没提供Demo)。具体的Vue和React相关Demo可以查看[Git仓库](https://github.com/JiquanWang99/charge-waterfall)。**维护不易，欢迎大家多多♥star⭐♥，也欢迎各位发现了问题给我提issue**
+一个使用纯**TypeScript**编写的瀑布流工具插件，定宽不定高。简单好用，配置方便，纯中文提示，即插即用。适用于JS、Vue、React、Angular(暂时没提供Demo)。具体的Vue和React相关Demo可以查看[Git仓库](https://github.com/JiquanWang99/charge-waterfall)。**维护不易，欢迎大家多多♥star⭐♥，也欢迎各位发现了问题给我提issue**
 
 ### 安装
 
