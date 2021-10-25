@@ -1,31 +1,17 @@
-import { debounce, loadAsyncImage, throttle } from "../utils/index";
+import { debounce, deepMerge, loadAsyncImage, throttle } from "../utils/index";
 import type { TOptions, TDataSource } from "./types";
 import animationMap from '../animations/index'
-import merge from 'lodash.merge'
+import { options as defaultOptions } from './default'
 
 export default class Waterfall {
-  private options: TOptions = {
-    container: null,
-    initialData: [],
-    imgClass: 'waterfall-img',
-    imgContainerClass: 'waterfall-img-container',
-    bottomContainerClass: 'waterfall-bottom-container',
-    column: 2,
-    gapX: 0,
-    gapY: 0,
-    bottomDistance: 100,
-    resizable: true,
-    animation: {
-      name: 'none',
-      duration: 0.5
-    }
-  }
+  private options: TOptions
   private items: HTMLElement[] = []  //存储子元素
   private itemHeight: number[] = []  //每列的高度
   private store: any = {}
 
   constructor(options: TOptions) {
-    this.options = merge(this.options, options)
+    this.options = deepMerge(defaultOptions, options)
+    console.log(this.options)
     this.init()
   }
 

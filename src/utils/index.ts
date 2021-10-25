@@ -1,3 +1,22 @@
+type DataType = 'undefined' |
+  'null' |
+  'boolean' |
+  'string' |
+  'number' |
+  'bigint' |
+  'object' |
+  'symbol' |
+  'array'
+
+export function getTypeof(data: any): DataType {
+  if (!data) return 'null'
+  return Object.prototype.toString.call(data).toLocaleLowerCase().slice(8, -1) as DataType
+}
+
+export function isPlainObject(data: any): data is Object {
+  return getTypeof(data) === 'object'
+}
+
 export function throttle(fn: Function, wait: number = 100) {
   let prev = +new Date()
 
@@ -38,4 +57,26 @@ export function loadAsyncImage(imageUrl: string): Promise<HTMLImageElement> {
       reject(e)
     }
   })
+}
+
+export function deepMerge(...objs: any[]) {
+  const result = Object.create(null)
+  objs.forEach(obj => {
+    if (obj) {
+      Object.keys(obj).forEach(key => {
+        const val = obj[key]
+        if (isPlainObject(val)) {
+          if (isPlainObject(result[key])) {
+            result[key] = deepMerge(result[key], val)
+          } else {
+            result[key] = deepMerge(val)
+          }
+        } else {
+          result[key] = val
+        }
+      })
+    }
+  })
+
+  return result
 }
