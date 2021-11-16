@@ -1,16 +1,20 @@
 {
-  "name": "water-fall",
-  "version": "0.0.3",
-  "description": "使用TypeScript开发的瀑布流布局",
+  "name": "charge-waterfall",
+  "version": "0.0.8",
+  "description": "一个使用纯TypeScript编写的适用于PC端的瀑布流工具插件，定宽不定高。简单好用，配置方便，纯中文提示，即插即用。适用于JS、Vue、React、Angular",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "rollup -c"
+    "build": "rollup -c",
+    "publish": "node script/publish.js && rollup -c"
   },
   "keywords": [
     "瀑布流",
-    "TypeScript",
     "布局",
+    "Vue",
+    "React",
+    "JavaScript",
+    "TypeScript",
     "Waterfall",
     "rollup"
   ],
@@ -18,9 +22,9 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "https://github.com/JiquanWang99/charge-waterfall"
   },
-  "homepage": "",
+  "homepage": "https://github.com/JiquanWang99/charge-waterfall",
   "broswer": "dist/index.js",
   "devDependencies": {
     "@babel/core": "^7.15.5",
@@ -30,10 +34,14 @@
     "@rollup/plugin-babel": "^5.3.0",
     "@rollup/plugin-commonjs": "^21.0.0",
     "@rollup/plugin-node-resolve": "^13.0.5",
+    "@types/lodash.merge": "^4.6.6",
     "rollup": "^2.58.0",
     "rollup-plugin-terser": "^7.0.2",
     "rollup-plugin-typescript2": "^0.30.0",
     "tslib": "^2.3.1",
     "typescript": "^4.4.3"
+  },
+  "dependencies": {
+    "lodash.merge": "^4.6.2"
   }
 }
