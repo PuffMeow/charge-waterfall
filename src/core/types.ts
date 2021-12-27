@@ -1,49 +1,54 @@
 export interface TOptions {
   /** 装载图片的父容器 */
-  container: string | Element | null
+  container: string | Element | null;
   /** 初始化数据源 */
-  initialData: TDataSource[]
+  initialData: TDataSource[];
   /** 装载img标签的外层盒子class属性，默认 waterfall-img-container */
-  imgContainerClass?: string
+  imgContainerClass?: string;
   /** img标签的class属性，默认 waterfall-img */
-  imgClass?: string
+  imgClass?: string;
   /** 装载img标签图片底部内容盒子的class属性，默认 waterfall-bottom-container */
-  bottomContainerClass?: string
+  bottomContainerClass?: string;
   /**每一列的宽度 */
-  width?: number
+  width?: number;
   /** 水平方向展示的列数 */
-  column?: number
+  column?: number;
   /** 元素水平间距 */
-  gapX?: number
+  gapX?: number;
   /** 元素垂直间距 */
-  gapY?: number
+  gapY?: number;
   /** 图片加载失败时会加载这里设置的默认占位图 */
-  defaultImgUrl?: string
+  defaultImgUrl?: string;
   /** 动画配置项 */
-  animation?: TAnimationOptions
+  animation?: TAnimationOptions;
   /** 是否响应式改变布局宽度 */
-  resizable?: boolean
+  resizable?: boolean;
   /** 触底事件触发时离底部的距离 */
-  bottomDistance?: number
+  bottomDistance?: number;
   /** 点击对应的项，回调参数是对应项的dataSource和点击event事件 */
-  onClick?: (dataSource: TDataSource, event: Event) => void
+  onClick?: (dataSource: TDataSource, event: Event) => void;
   /** 传入要渲染的元素模板字符串，例如 `<div>Title</div>` */
-  render?: (dataSource: TDataSource) => string
+  render?: (dataSource: TDataSource) => string;
 }
 
 export interface TDataSource<T = any> {
   /** 图片url地址 */
-  src?: string
+  src?: string;
   /** 自定义的data数据，如果在TS中使用可以通过泛型来定义data中的类型 */
-  data: T
-  alt?: string
+  data?: T;
+  alt?: string;
 }
 
-export type TAnimationNames = 'none' | 'fadeInDown' | 'fadeInUp' | 'fadeInLeft' | 'fadeInRight'
+export type TAnimationNames =
+  | "none"
+  | "fadeInDown"
+  | "fadeInUp"
+  | "fadeInLeft"
+  | "fadeInRight";
 
 export interface TAnimationOptions {
   /** 动画名称 */
-  name?: TAnimationNames
+  name?: TAnimationNames;
   /** 动画持续时间，单位(秒:s) */
-  duration?: number
+  duration?: number;
 }

@@ -1,5 +1,3 @@
 node_modules
-node_modules
-example
-vue-demo/node_modules
-react-demo/node_modules
+dist
+demo/**/node_modules

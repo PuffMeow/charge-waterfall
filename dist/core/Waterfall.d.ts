@@ -1,5 +1,6 @@
+import { EventEmitter } from "../helper/eventEmitter";
 import type { TOptions, TDataSource } from "./types";
-export default class Waterfall {
+export default class Waterfall extends EventEmitter {
     private options;
     private items;
     private itemHeight;
@@ -12,9 +13,9 @@ export default class Waterfall {
     private refreshContainerHeight;
     private resize;
     /** 触底时的回调函数 */
-    onReachBottom: (reachBottomCallback: () => void) => void;
+    private onTouchBottom;
     /** 触底加载更多 */
-    loadMore: (dataSource: TDataSource[]) => void;
+    loadMore: (dataSource: TDataSource[]) => Promise<void>;
     /** 销毁监听的scroll事件和resize事件 */
     destroy: () => void;
 }

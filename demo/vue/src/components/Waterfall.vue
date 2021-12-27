@@ -3,92 +3,19 @@
     <!-- 装图片的容器 ，必须是空的-->
     <div class="container"></div>
 
-    <!-- 这里的内容是Loading图片 -->
+    <!-- 这里的内容是Loading -->
     <div
       v-if="isLoading"
       style="display: flex; justify-content: center; align-items: center"
     >
-      <svg
-        width="50"
-        height="20"
-        viewBox="0 0 120 30"
-        xmlns="http://www.w3.org/2000/svg"
-        fill="#000"
-      >
-        <circle cx="15" cy="15" r="15">
-          <animate
-            attributeName="r"
-            from="15"
-            to="15"
-            begin="0s"
-            dur="0.8s"
-            values="15;9;15"
-            calcMode="linear"
-            repeatCount="indefinite"
-          />
-          <animate
-            attributeName="fill-opacity"
-            from="1"
-            to="1"
-            begin="0s"
-            dur="0.8s"
-            values="1;.5;1"
-            calcMode="linear"
-            repeatCount="indefinite"
-          />
-        </circle>
-        <circle cx="60" cy="15" r="9" fill-opacity="0.3">
-          <animate
-            attributeName="r"
-            from="9"
-            to="9"
-            begin="0s"
-            dur="0.8s"
-            values="9;15;9"
-            calcMode="linear"
-            repeatCount="indefinite"
-          />
-          <animate
-            attributeName="fill-opacity"
-            from="0.5"
-            to="0.5"
-            begin="0s"
-            dur="0.8s"
-            values=".5;1;.5"
-            calcMode="linear"
-            repeatCount="indefinite"
-          />
-        </circle>
-        <circle cx="105" cy="15" r="15">
-          <animate
-            attributeName="r"
-            from="15"
-            to="15"
-            begin="0s"
-            dur="0.8s"
-            values="15;9;15"
-            calcMode="linear"
-            repeatCount="indefinite"
-          />
-          <animate
-            attributeName="fill-opacity"
-            from="1"
-            to="1"
-            begin="0s"
-            dur="0.8s"
-            values="1;.5;1"
-            calcMode="linear"
-            repeatCount="indefinite"
-          />
-        </circle>
-      </svg>
+      正在努力加载...
     </div>
   </div>
 </template>
 
 <script>
 // import Waterfall from 'charge-waterfall'
-import Waterfall from '../../../dist/index.js'
+import Waterfall from '../../../../dist/index'
 export default {
   name: 'Waterfall',
   data() {
@@ -109,7 +36,7 @@ export default {
           },
         },
         {
-          src: 'https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fpic.jj20.com%2Fup%2Fallimg%2Fmn02%2F062919233114%2F1Z629233114-5.jpg&refer=http%3A%2F%2Fpic.jj20.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1636017833&t=4ddaf1b496ec72d9a24a0d21f9019733',
+          src: 'https://img0.baidu.com/it/u=2889371076,2512753262&fm=26&fmt=auto',
           data: {
             name: '第三张图',
           },
@@ -151,6 +78,7 @@ export default {
       container: '.container',
       initialData: this.initialData,
       column: 2,
+      gapY: 20,
       animation: {
         name: 'fadeInRight',
         duration: 1,
@@ -162,44 +90,43 @@ export default {
         `<div>这是${dataSource.data?.name}</div>
         <div>哈哈哈哈哈</div>
         <div>测试测试</div>
-        <div>测试测试</div>
-        <div>测试测试</div>
-        <div>测试测试</div>
-        <div>测试测试</div>
         `,
       onClick: (data, event) => {
         console.log(data, event)
       },
     })
 
-    this.waterfall.onReachBottom(async () => {
-      if (this.isLoading) return
-      // 加锁防止重复请求
-      this.isLoading = true
+    this.waterfall.on('load', async () => {
       console.log('触底')
+      // 加个 loading 锁防止触底重复发送请求
+      if (this.isLoading) return
+      this.isLoading = true
       // 模拟一个异步请求，拿到异步请求的数据之后塞进loadMore里面
-      await this.sleep(2000)
-      this.waterfall.loadMore([
-        {
-          data: {
-            name: `${Math.floor(Math.random() * 100)}`,
-          },
-        },
-        {
-          src: 'https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fpic.jj20.com%2Fup%2Fallimg%2Fmn02%2F062919233114%2F1Z629233114-5.jpg&refer=http%3A%2F%2Fpic.jj20.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1636017833&t=4ddaf1b496ec72d9a24a0d21f9019733',
-          data: {
-            name: `${Math.floor(Math.random() * 100)}`,
-          },
-        },
-      ])
+      const res = await this.getData()
+      this.waterfall.loadMore(res)
       this.isLoading = false
     })
   },
 
   methods: {
-    sleep(wait) {
+    getData() {
       return new Promise((resolve) => {
-        setTimeout(resolve, wait)
+        setTimeout(() => {
+          resolve([
+            {
+              src: 'http://t15.baidu.com/it/u=3768986255,1243616948&fm=224&app=112&f=JPEG?w=500&h=313&s=192357305B224A0B02DD7CCA0300E0B0',
+              data: {
+                name: `${Math.floor(Math.random() * 100)}`,
+              },
+            },
+            {
+              src: 'https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fpic1.win4000.com%2Fwallpaper%2F2018-09-11%2F5b9784aa5ec31.jpg%3Fdown&refer=http%3A%2F%2Fpic1.win4000.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1638634995&t=45677655e1c172bf9eb614c8f47920cc',
+              data: {
+                name: `${Math.floor(Math.random() * 100)}`,
+              },
+            },
+          ])
+        }, 3000)
       })
     },
   },
