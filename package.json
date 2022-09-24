@@ -1,12 +1,12 @@
 {
   "name": "charge-waterfall",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "使用纯TypeScript编写的瀑布流工具插件，定宽不定高。简单好用，配置方便，纯中文提示，即插即用。适用于JS、Vue、React、Angular",
   "main": "index.js",
   "scripts": {
     "test": "jest",
     "build": "rollup -c",
-    "publish": "node script/publish.js && rollup -c && cd dist && npm publish"
+    "pub": "node script/publish.js && rollup -c && cd dist && npm publish"
   },
   "keywords": [
     "瀑布流",

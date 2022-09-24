@@ -6,6 +6,7 @@ import { EventEmitter } from "../libs/eventEmitter";
 import type { TOptions, TDataSource } from "./types";
 
 export default class Waterfall extends EventEmitter {
+  private isLoadingImage = false;
   private options: TOptions;
   private items: HTMLElement[] = []; //存储子元素
   private itemHeight: number[] = []; //每列的高度
@@ -48,9 +49,11 @@ export default class Waterfall extends EventEmitter {
   };
 
   private initImage = async (dataSource: TDataSource[]) => {
+    this.isLoadingImage = true;
     const containerChildrens = await this.createContent(dataSource);
     this.items = this.items.concat(containerChildrens);
     this.computePosition(containerChildrens);
+    this.isLoadingImage = false;
   };
 
   private createContent = async (dataSource: TDataSource[] = []) => {
@@ -80,7 +83,7 @@ export default class Waterfall extends EventEmitter {
             const defaultImg = await loadAsyncImage(defaultImgUrl);
             img.src = defaultImg.src;
           } catch (e) {
-            console.error(`该默认图片加载失败：${defaultImgUrl}`);
+            console.error(`该默认图片加载失败：${defaultImgUrl}, ${e}`);
           }
         }
         img.alt = data?.alt || "image";
@@ -107,7 +110,7 @@ export default class Waterfall extends EventEmitter {
 
   private computePosition = (
     containerChildrens: HTMLElement[],
-    isResize: boolean = false
+    isResize: boolean = true
   ) => {
     requestAnimationFrame(() => {
       let {
@@ -127,8 +130,8 @@ export default class Waterfall extends EventEmitter {
       isResize && (this.itemHeight = new Array(column).fill(0));
 
       for (let item of containerChildrens) {
-        item.style.opacity = "0";
         if (animation!.name !== "none") {
+          item.style.opacity = "0";
           item.style.transform = animationMap[animation!.name!].start;
         }
         const img = item.querySelector("img");
@@ -160,12 +163,14 @@ export default class Waterfall extends EventEmitter {
         this.itemHeight[idx] += Math.round(
           (imgContainerHeight! * width!) / width! + gapY!
         );
-        item.style.transition = `transform ${animation!.duration}s ease`;
-        item.style.opacity = "1";
+
         if (animation!.name !== "none") {
+          item.style.transition = `transform ${animation!.duration}s ease`;
+          item.style.opacity = "1";
           item.style.transform = animationMap[animation!.name!].end;
         }
       }
+
       this.refreshContainerHeight();
     });
   };
@@ -186,7 +191,7 @@ export default class Waterfall extends EventEmitter {
 
   /** 触底时的回调函数 */
   private onTouchBottom = () => {
-    const { bottomDistance = 100 } = this.options;
+    const { bottomDistance = 100, onReachBottom } = this.options;
     if (bottomDistance < 100) {
       console.error("bottomDistance，触底事件离底部触发的距离不能小于100");
       return;
@@ -198,7 +203,9 @@ export default class Waterfall extends EventEmitter {
         const { clientHeight, scrollTop, scrollHeight } =
           document.documentElement;
         if (clientHeight + scrollTop + bottomDistance >= scrollHeight) {
-          this.emit("load");
+          if (this.isLoadingImage) return;
+          this.emit("onTouchBottom");
+          onReachBottom?.();
         }
       }))
     );
@@ -206,7 +213,9 @@ export default class Waterfall extends EventEmitter {
 
   /** 触底加载更多 */
   loadMore = async (dataSource: TDataSource[]) => {
-    this.initImage(dataSource);
+    this.on("onTouchBottom", () => {
+      this.initImage(dataSource);
+    });
   };
 
   /** 销毁监听的scroll事件和resize事件 */

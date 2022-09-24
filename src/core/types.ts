@@ -27,6 +27,8 @@ export interface TOptions {
   bottomDistance?: number;
   /** 点击对应的项，回调参数是对应项的dataSource和点击event事件 */
   onClick?: (dataSource: TDataSource, event: Event) => void;
+  /** 滚动到底部的时候触发的回调 */
+  onReachBottom?: () => void;
   /** 传入要渲染的元素模板字符串，例如 `<div>Title</div>` */
   render?: (dataSource: TDataSource) => string;
 }

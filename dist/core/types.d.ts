@@ -2,7 +2,7 @@ export interface TOptions {
     /** 装载图片的父容器 */
     container: string | Element | null;
     /** 初始化数据源 */
-    initialData: TDataSource[];
+    initialData?: TDataSource[];
     /** 装载img标签的外层盒子class属性，默认 waterfall-img-container */
     imgContainerClass?: string;
     /** img标签的class属性，默认 waterfall-img */
