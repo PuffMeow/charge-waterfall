@@ -1,4 +1,5 @@
-import { debounce, deepMerge, loadAsyncImage, throttle } from "../libs/utils";
+import deepMerge from "deepmerge";
+import { debounce, loadAsyncImage, throttle } from "../libs/utils";
 import animationMap from "../animations/index";
 import { options as defaultOptions } from "./default";
 import { EventEmitter } from "../libs/eventEmitter";
@@ -8,7 +9,7 @@ export default class Waterfall extends EventEmitter {
   private options: TOptions;
   private items: HTMLElement[] = []; //存储子元素
   private itemHeight: number[] = []; //每列的高度
-  private store: any = {};
+  private eventStore: any = {};
 
   constructor(options: TOptions) {
     super();
@@ -18,14 +19,14 @@ export default class Waterfall extends EventEmitter {
   }
 
   private init = async () => {
-    const { resizable, initialData, column } = this.options;
+    const { resizable, initialData = [], column } = this.options;
     if (typeof this.options.container === "string") {
       if (
         !this.options.container.startsWith(".") &&
         !this.options.container.startsWith("#")
       ) {
         throw new Error(
-          `请按照标准的dom查询条件传入，如'.container'或'#container'`
+          `请按照标准的 DOM 查询条件传入，如'.container' 或 '#container'`
         );
       }
 
@@ -39,15 +40,6 @@ export default class Waterfall extends EventEmitter {
     }
 
     (this.options.container as HTMLElement).style.overflowX = "hidden";
-    const items = Array.from(
-      (this.options.container as HTMLElement).children
-    ) as HTMLElement[];
-    if (items.length) {
-      console.error(
-        `container中存在其它元素，使用时请确保container为空的容器。当前已为您清空该容器。`
-      );
-      this.options.container.innerHTML = "";
-    }
     this.itemHeight = new Array(column).fill(0);
     (this.options.container as HTMLElement).style.position = "relative";
     resizable && this.resize();
@@ -186,27 +178,29 @@ export default class Waterfall extends EventEmitter {
   private resize = () => {
     window.addEventListener(
       "resize",
-      (this.store.throttleResize = throttle(() => {
+      (this.eventStore.throttleResize = throttle(() => {
         this.computePosition(this.items, true);
-      }, 50))
+      }))
     );
   };
 
   /** 触底时的回调函数 */
   private onTouchBottom = () => {
-    const { bottomDistance } = this.options;
-    if (bottomDistance! < 100) {
-      throw new Error("bottomDistance，触底事件离底部触发的距离不能小于100");
+    const { bottomDistance = 100 } = this.options;
+    if (bottomDistance < 100) {
+      console.error("bottomDistance，触底事件离底部触发的距离不能小于100");
+      return;
     }
+
     window.addEventListener(
       "scroll",
-      (this.store.debounceScroll = debounce(() => {
+      (this.eventStore.debounceScroll = debounce(() => {
         const { clientHeight, scrollTop, scrollHeight } =
           document.documentElement;
-        if (clientHeight + scrollTop + bottomDistance! >= scrollHeight) {
+        if (clientHeight + scrollTop + bottomDistance >= scrollHeight) {
           this.emit("load");
         }
-      }, 100))
+      }))
     );
   };
 
@@ -217,7 +211,7 @@ export default class Waterfall extends EventEmitter {
 
   /** 销毁监听的scroll事件和resize事件 */
   destroy = () => {
-    window.removeEventListener("resize", this.store.throttleResize);
-    window.removeEventListener("scroll", this.store.debounceScroll);
+    window.removeEventListener("resize", this.eventStore.throttleResize);
+    window.removeEventListener("scroll", this.eventStore.debounceScroll);
   };
 }
