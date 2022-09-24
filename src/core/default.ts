@@ -1,4 +1,4 @@
-import { TOptions } from "../../dist";
+import { TOptions } from "./types";
 
 export const options: TOptions = {
   container: null,

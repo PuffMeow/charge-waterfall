@@ -7,7 +7,9 @@ type DataType =
   | "bigint"
   | "object"
   | "symbol"
-  | "array";
+  | "array"
+  | "date"
+  | string;
 
 export function getTypeof(data: any): DataType {
   if (!data) return "null";

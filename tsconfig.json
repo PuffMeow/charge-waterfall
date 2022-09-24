@@ -2,6 +2,7 @@
   "compilerOptions": {
     "target": "es5",
     "module": "esnext",
+    "lib": ["ES2015"],
     "moduleResolution": "Node",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
@@ -13,5 +14,6 @@
     "skipLibCheck": true,
     "declaration": true,
     "downlevelIteration": true
-  }
+  },
+  "exclude": ["./jest.config.ts", "**/tests"]
 }

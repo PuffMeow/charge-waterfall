@@ -34,10 +34,10 @@ export interface TDataSource<T = any> {
     /** 图片url地址 */
     src?: string;
     /** 自定义的data数据，如果在TS中使用可以通过泛型来定义data中的类型 */
-    data: T;
+    data?: T;
     alt?: string;
 }
-export declare type TAnimationNames = 'none' | 'fadeInDown' | 'fadeInUp' | 'fadeInLeft' | 'fadeInRight';
+export declare type TAnimationNames = "none" | "fadeInDown" | "fadeInUp" | "fadeInLeft" | "fadeInRight";
 export interface TAnimationOptions {
     /** 动画名称 */
     name?: TAnimationNames;

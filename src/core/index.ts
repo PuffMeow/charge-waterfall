@@ -1,7 +1,7 @@
-import { debounce, deepMerge, loadAsyncImage, throttle } from "../helper/utils";
+import { debounce, deepMerge, loadAsyncImage, throttle } from "../libs/utils";
 import animationMap from "../animations/index";
 import { options as defaultOptions } from "./default";
-import { EventEmitter } from "../helper/eventEmitter";
+import { EventEmitter } from "../libs/eventEmitter";
 import type { TOptions, TDataSource } from "./types";
 
 export default class Waterfall extends EventEmitter {

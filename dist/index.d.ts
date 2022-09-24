@@ -1,3 +1,3 @@
-import Waterfall from './core/Waterfall';
-export * from './core/types';
+import Waterfall from "./core";
+export * from "./core/types";
 export default Waterfall;
