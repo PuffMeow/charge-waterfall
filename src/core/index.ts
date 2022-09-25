@@ -2,19 +2,15 @@ import deepMerge from "deepmerge";
 import { debounce, loadAsyncImage, throttle } from "../libs/utils";
 import animationMap from "../animations/index";
 import { options as defaultOptions } from "./default";
-import { EventEmitter } from "../libs/eventEmitter";
 import type { TOptions, TDataSource } from "./types";
 
-export default class Waterfall extends EventEmitter {
-  private isLoadingImage = false;
+export default class Waterfall {
   private options: TOptions;
   private items: HTMLElement[] = []; //存储子元素
-  private itemHeight: number[] = []; //每列的高度
+  private imageHeightTrack: number[] = []; //每列的高度
   private eventStore: any = {};
 
   constructor(options: TOptions) {
-    super();
-
     this.options = deepMerge(defaultOptions, options);
     this.init();
   }
@@ -27,7 +23,7 @@ export default class Waterfall extends EventEmitter {
         !this.options.container.startsWith("#")
       ) {
         throw new Error(
-          `请按照标准的 DOM 查询条件传入，如'.container' 或 '#container'`
+          `传入的 ${this.options.container} 不符合标准 DOM 查询规范， 请按照标准的 DOM 查询规范传入，如'.container' 或 '#container'`
         );
       }
 
@@ -37,23 +33,22 @@ export default class Waterfall extends EventEmitter {
     }
 
     if (!this.options.container) {
-      throw new Error("container实例不存在，请检查");
+      throw new Error(
+        `container: ${this.options.container} 实例不存在，请检查`
+      );
     }
 
     (this.options.container as HTMLElement).style.overflowX = "hidden";
-    this.itemHeight = new Array(column).fill(0);
+    this.imageHeightTrack = new Array(column).fill(0);
     (this.options.container as HTMLElement).style.position = "relative";
     resizable && this.resize();
     this.initImage(initialData);
-    this.onTouchBottom();
   };
 
   private initImage = async (dataSource: TDataSource[]) => {
-    this.isLoadingImage = true;
     const containerChildrens = await this.createContent(dataSource);
     this.items = this.items.concat(containerChildrens);
     this.computePosition(containerChildrens);
-    this.isLoadingImage = false;
   };
 
   private createContent = async (dataSource: TDataSource[] = []) => {
@@ -110,7 +105,7 @@ export default class Waterfall extends EventEmitter {
 
   private computePosition = (
     containerChildrens: HTMLElement[],
-    isResize: boolean = true
+    isResize: boolean = false
   ) => {
     requestAnimationFrame(() => {
       let {
@@ -125,16 +120,16 @@ export default class Waterfall extends EventEmitter {
         },
       } = this;
       width =
-        width || (this.options.container as HTMLElement).clientWidth / column!;
+        width ?? (this.options.container as HTMLElement).clientWidth / column!;
 
-      isResize && (this.itemHeight = new Array(column).fill(0));
+      isResize && (this.imageHeightTrack = new Array(column).fill(0));
 
       for (let item of containerChildrens) {
         if (animation!.name !== "none") {
           item.style.opacity = "0";
           item.style.transform = animationMap[animation!.name!].start;
         }
-        const img = item.querySelector("img");
+        const img = item.getElementsByTagName("img")[0];
         if (img) {
           img.style.width = width + "px";
         }
@@ -157,10 +152,14 @@ export default class Waterfall extends EventEmitter {
           imgContainerHeight = img?.height || 0;
         }
 
-        let idx = this.itemHeight.indexOf(Math.min(...this.itemHeight)); //找到高度最小的元素的下标
+        // 寻找高度最低的那一列轨道
+        let idx = this.imageHeightTrack.indexOf(
+          Math.min(...this.imageHeightTrack)
+        );
         item.style.left = idx * (width! + gapX!) + "px";
-        item.style.top = this.itemHeight[idx] + "px";
-        this.itemHeight[idx] += Math.round(
+        item.style.top = this.imageHeightTrack[idx] + "px";
+
+        this.imageHeightTrack[idx] += Math.ceil(
           (imgContainerHeight! * width!) / width! + gapY!
         );
 
@@ -176,7 +175,7 @@ export default class Waterfall extends EventEmitter {
   };
 
   private refreshContainerHeight = () => {
-    const max = Math.max(...this.itemHeight);
+    const max = Math.max(...this.imageHeightTrack);
     (this.options.container as HTMLElement).style.height = max + "px";
   };
 
@@ -190,11 +189,10 @@ export default class Waterfall extends EventEmitter {
   };
 
   /** 触底时的回调函数 */
-  private onTouchBottom = () => {
-    const { bottomDistance = 100, onReachBottom } = this.options;
-    if (bottomDistance < 100) {
-      console.error("bottomDistance，触底事件离底部触发的距离不能小于100");
-      return;
+  onReachBottom = (callback?: () => void) => {
+    const { bottomDistance = 150 } = this.options;
+    if (bottomDistance < 150) {
+      throw new Error("bottomDistance 属性不能小于15");
     }
 
     window.addEventListener(
@@ -203,9 +201,7 @@ export default class Waterfall extends EventEmitter {
         const { clientHeight, scrollTop, scrollHeight } =
           document.documentElement;
         if (clientHeight + scrollTop + bottomDistance >= scrollHeight) {
-          if (this.isLoadingImage) return;
-          this.emit("onTouchBottom");
-          onReachBottom?.();
+          callback?.();
         }
       }))
     );
@@ -213,9 +209,7 @@ export default class Waterfall extends EventEmitter {
 
   /** 触底加载更多 */
   loadMore = async (dataSource: TDataSource[]) => {
-    this.on("onTouchBottom", () => {
-      this.initImage(dataSource);
-    });
+    this.initImage(dataSource);
   };
 
   /** 销毁监听的scroll事件和resize事件 */
