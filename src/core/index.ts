@@ -192,7 +192,7 @@ export default class Waterfall {
   onReachBottom = (callback?: () => void) => {
     const { bottomDistance = 150 } = this.options;
     if (bottomDistance < 150) {
-      throw new Error("bottomDistance 属性不能小于15");
+      throw new Error("bottomDistance 属性不能小于150");
     }
 
     window.addEventListener(
