@@ -15,5 +15,5 @@
     "declaration": true,
     "downlevelIteration": true
   },
-  "exclude": ["./jest.config.ts", "**/tests"]
+  "exclude": ["./jest.config.ts", "**/tests", "demo"]
 }
