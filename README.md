@@ -93,7 +93,7 @@ interface TDataSource<T = any> {
   /** 图片url地址 */
   src?: string
   /** 自定义的data数据，如果在TS中使用可以通过泛型来定义data中的类型 */
-  data: T
+  data?: T
   alt?: string
 }
 ```
