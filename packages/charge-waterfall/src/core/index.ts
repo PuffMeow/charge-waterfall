@@ -4,7 +4,7 @@ import animationMap from "../animations/index";
 import { options as defaultOptions } from "./default";
 import type { TOptions, TDataSource } from "./types";
 
-export default class Waterfall {
+class Waterfall {
   private options: TOptions;
   private items: HTMLElement[] = []; //存储子元素
   private imageHeightTrack: number[] = []; //每列的高度
@@ -218,3 +218,5 @@ export default class Waterfall {
     window.removeEventListener("scroll", this.eventStore.debounceScroll);
   };
 }
+
+export default Waterfall;
