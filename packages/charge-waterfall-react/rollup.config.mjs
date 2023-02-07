@@ -1,10 +1,11 @@
 import { nodeResolve } from "@rollup/plugin-node-resolve";
 import commonjs from "@rollup/plugin-commonjs";
 import typescript from "rollup-plugin-typescript2"; //ts解析
-import { terser } from "rollup-plugin-terser"; //代码压缩
+import babel from "@rollup/plugin-babel";
+import terser from "@rollup/plugin-terser"; //代码压缩
 
 export default {
-  input: "src/index.ts",
+  input: "src/index.tsx",
   output: [
     {
       name: "bundle.js",
@@ -21,5 +22,6 @@ export default {
       format: "es",
     },
   ],
-  plugins: [nodeResolve(), commonjs(), typescript(), terser()],
+  external: ["react", "react-dom"],
+  plugins: [nodeResolve(), commonjs(), typescript(), terser(), babel()],
 };

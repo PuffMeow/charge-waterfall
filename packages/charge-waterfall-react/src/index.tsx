@@ -86,7 +86,7 @@ const Waterfall = <T,>({
     return () => {
       waterfall.destroy();
     };
-  }, [gapX, gapY, width, column]);
+  }, [gapX, gapY, width, column, bottomDistance, defaultImgUrl, dataSource]);
 
   return <div className="charge-waterfall-container"></div>;
 };
