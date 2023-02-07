@@ -1,11 +1,29 @@
 {
   "name": "charge-waterfall-react",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "files": [
+    "README.md",
+    "package.json",
+    "dist/index.js",
+    "dist/index.esm.js"
+  ],
+  "module": "dist/index.esm.js",
+  "types": "dist/index.d.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "rimraf dist && rollup -c"
   },
+  "keywords": [
+    "瀑布流",
+    "布局",
+    "Vue",
+    "React",
+    "JavaScript",
+    "TypeScript",
+    "Waterfall",
+    "rollup"
+  ],
   "peerDependencies": {
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
@@ -19,7 +37,6 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
-  "keywords": [],
-  "author": "",
+  "author": "Puffmeow",
   "license": "ISC"
 }

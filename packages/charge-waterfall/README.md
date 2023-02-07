@@ -1,6 +1,6 @@
 ### 简介
 
-一个使用纯**TypeScript**编写的瀑布流工具插件，定宽不定高。简单好用，配置方便，纯中文提示，即插即用。适用于 JS、Vue、React、Angular(暂时没提供 Demo)。具体的 Vue 和 React 相关 Demo 可以查看[Git 仓库](https://github.com/JiquanWang99/charge-waterfall)。**维护不易，欢迎大家多多 ♥star⭐♥，也欢迎各位发现了问题给我提 issue**
+一个使用纯**TypeScript**编写的瀑布流工具插件，定宽不定高。简单好用，配置方便，纯中文提示，即插即用。适用于 JS、Vue、React、Angular(暂时没提供 Demo)。具体的 Vue 和 React 相关 Demo 可以查看[Git 仓库](https://github.com/Puffmeow/charge-waterfall)。**维护不易，欢迎大家多多 ♥star⭐♥，也欢迎各位发现了问题给我提 issue**
 
 ### 安装
 
@@ -163,11 +163,11 @@ waterfall.destroy();
 
 ### 使用方式
 
-关于更加详尽的使用方式可以打开[Git 仓库](https://github.com/JiquanWang99/charge-waterfall)，查看相关的 demo。
+关于更加详尽的使用方式可以打开[Git 仓库](https://github.com/Puffmeow/charge-waterfall)，查看相关的 demo。
 
 #### 关于 Vue
 
-可以`git clone https://github.com/JiquanWang99/charge-waterfall.git`，把仓库克隆到本地之后，然后`cd demo/vue-demo`，然后执行`npm install`，再执行`npm run dev`便可以在本地查看 demo。
+可以`git clone https://github.com/Puffmeow/charge-waterfall.git`，把仓库克隆到本地之后，然后`cd demo/vue-demo`，然后执行`npm install`，再执行`npm run dev`便可以在本地查看 demo。
 
 #### 关于 React
 
