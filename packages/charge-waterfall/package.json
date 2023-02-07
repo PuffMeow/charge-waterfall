@@ -1,8 +1,8 @@
 {
   "name": "charge-waterfall",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "使用纯TypeScript编写的瀑布流工具插件，定宽不定高。简单好用，配置方便，纯中文提示，即插即用。适用于JS、Vue、React、Angular",
-  "main": "index.js",
+  "main": "dist/index.js",
   "files": [
     "README.md",
     "package.json",
@@ -13,7 +13,7 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "test": "jest",
-    "build": "rimraf dist && tsc dist && rollup -c"
+    "build": "rimraf dist && rollup -c"
   },
   "keywords": [
     "瀑布流",
