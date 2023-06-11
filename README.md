@@ -229,7 +229,6 @@ onMounted(() => {
     if (isLoading.value) return;
     isLoading.value = true;
     console.log("触底");
-    isLoading.value = true;
     // 模拟一个异步请求，拿到异步请求的数据之后塞进loadMore里面
     await sleep(2000);
 
